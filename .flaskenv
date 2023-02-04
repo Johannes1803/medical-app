@@ -1,2 +1,2 @@
-FLASK_APP=medical_app.py
-FLASK_DEBUG=True
+FLASK_APP = "medical_app/backend"
+FLASK_DEBUG = True
