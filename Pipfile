@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 flask = "2.2"
+flask-SQLAlchemy = "3"
+Flask-Migrate = "*"
 python-dotenv = "*"
 
 [dev-packages]
