@@ -54,4 +54,4 @@ class Record(db.Model):
     date_diagnosis = db.Column(db.DateTime, nullable=False)
     date_symptom_onset = db.Column(db.DateTime, nullable=False)
     date_symptom_offset = db.Column(db.DateTime, nullable=True)
-    parent_id: Mapped[int] = mapped_column(db.ForeignKey("patient.id"))
+    patient_id: Mapped[int] = mapped_column(db.ForeignKey("patient.id"))
