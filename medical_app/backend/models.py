@@ -9,9 +9,9 @@ from medical_app.backend import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64), index=True, unique=True)
-    last_name = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(64), index=True, unique=True)
+    first_name = db.Column(db.String(64), nullable=False)
+    last_name = db.Column(db.String(64), nullable=False)
+    email = db.Column(db.String(64), unique=True, nullable=False)
 
 
 association_table = db.Table(
