@@ -1,0 +1,190 @@
+openapi: '3.0.0'
+info:
+  version: '0.1.0'
+  title: 'medical_app'
+  description: Manage patient records for easier access to treatment history
+
+paths:
+  /medics:
+    get:
+      summary: Get all medics
+      responses:
+        '200':
+          description: List of medics, paginated
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - data
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/MedicArray'
+        default:
+          $ref: '#/components/responses/default'  
+  /medics/{medicId}:
+    parameters:
+    - name: medicId
+      description: The unique identifier of the Medic
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/MedicId'
+    get:
+      summary: Get a specific medic
+      responses:
+        '200':
+          description: One specific medic
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - data
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Medic'
+        '404':
+          $ref: '#/components/responses/NotFound'  
+        default:
+          $ref: '#/components/responses/default'  
+components:
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found
+            code: 404
+    default:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    PatientId:
+      description: The unique identifier of a patient
+      type: string
+    Patient:
+      description: Model of a patient
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - records
+        - medics
+      properties:
+        id:
+          $ref: '#/components/schemas/PatientId'
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        records:
+          $ref: '#/components/schemas/RecordArray'
+        medics:
+          $ref: '#/components/schemas/MedicArray'
+    PatientArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Patient'
+    MedicId:
+      description: The unique identifier of a medical professional
+      type: string
+    Medic:
+      description: Model of a medical professional
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - patients
+      properties:
+        id:
+          $ref: '#/components/schemas/MedicId'
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        patients:
+          $ref: '#/components/schemas/PatientArray'
+    MedicArray:
+      description: array of medics
+      type: array
+      minItems: 0
+      maxItems: 10
+      items:
+        $ref: '#/components/schemas/Medic'
+    RecordId:
+      description: The unique identifier of a medical record
+      type: string
+    Record:
+      description: Model of a medical record
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - symptoms
+        - date_diagnosis
+        - date_symptom_onset
+      properties:
+        id: 
+          $ref: '#/components/schemas/RecordId'
+        title:
+          type: string
+        description:
+          type: string
+        symptoms:
+          type: array
+          items:
+            type: string
+        date_diagnosis:
+          type: string
+          format: date
+        date_symptom_onset:
+          type: string
+          format: date
+        date_symptom_offset:
+          type: string
+          format: date
+    RecordArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Record'
+    Error:
+      type: object
+      required:
+        - message
+        - code
+      properties:
+        message:
+          description: A human readable error message
+          type: string
+        code:
+          description: http error code
+          type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+security:
+  - ApiKey: []
