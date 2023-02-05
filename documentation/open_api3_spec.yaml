@@ -81,6 +81,13 @@ paths:
         default:
           $ref: '#/components/responses/default'
   /medics/{medicId}/patients:
+    parameters:
+    - name: medicId
+      description: The unique identifier of the Medic
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/MedicId'
     get:
       summary: Get all patients of one medic
       responses:
@@ -154,7 +161,6 @@ components:
       description: Model of a patient
       type: object
       required:
-        - id
         - firstName
         - lastName
         - email
@@ -162,7 +168,9 @@ components:
         - medics
       properties:
         id:
-          $ref: '#/components/schemas/PatientId'
+          allOf:
+          - $ref: '#/components/schemas/PatientId'
+          - readOnly: true
         firstName:
           type: string
         lastName:
@@ -184,14 +192,15 @@ components:
       description: Model of a medical professional
       type: object
       required:
-        - id
         - firstName
         - lastName
         - email
         - patients
       properties:
         id:
-          $ref: '#/components/schemas/MedicId'
+          allOf:
+          - $ref: '#/components/schemas/MedicId'
+          - readOnly: true
         firstName:
           type: string
         lastName:
@@ -214,15 +223,16 @@ components:
       description: Model of a medical record
       type: object
       required:
-        - id
         - title
         - description
         - symptoms
         - date_diagnosis
         - date_symptom_onset
       properties:
-        id: 
-          $ref: '#/components/schemas/RecordId'
+        id:
+          allOf:
+          - $ref: '#/components/schemas/RecordId'
+          - readOnly: true
         title:
           type: string
         description:
