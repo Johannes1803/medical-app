@@ -10,7 +10,33 @@ paths:
       summary: Get all medics
       responses:
         '200':
-          description: List of medics, paginated
+          description: Array of medics, paginated
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - data
+                properties:
+                  status:
+                    type: string
+                    enum: [success, error]
+                  data:
+                    $ref: '#/components/schemas/MedicArray'
+        default:
+          $ref: '#/components/responses/default'
+    post:
+      summary: Create a new medic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medic'
+      responses:
+        '200':
+          description: Model of the newly created medic
           content:
             application/json:
               schema:
@@ -22,9 +48,9 @@ paths:
                   status:
                     type: string
                   data:
-                    $ref: '#/components/schemas/MedicArray'
+                    $ref: '#/components/schemas/Medic'
         default:
-          $ref: '#/components/responses/default'  
+          $ref: '#/components/responses/default'
   /medics/{medicId}:
     parameters:
     - name: medicId
@@ -53,7 +79,51 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'  
         default:
-          $ref: '#/components/responses/default'  
+          $ref: '#/components/responses/default'
+  /medics/{medicId}/patients:
+    get:
+      summary: Get all patients of one medic
+      responses:
+        '200':
+          description: Array of patients of one medic, paginated
+          content:
+            application/json:
+              schema:
+                required:
+                  - status
+                  - data
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/PatientArray'
+        default:
+          $ref: '#/components/responses/default' 
+  /patients/{patientId}:
+    parameters:
+    - name: patientId
+      description: The unique identifier of a patient
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/PatientId'
+    get:
+      summary: Get specific patient
+      responses:
+        '200':
+          description: One specific patient
+          content:
+            application/json:
+              schema:
+                required:
+                  - status
+                  - data
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Patient'
+         
 components:
   responses:
     NotFound:
@@ -63,6 +133,7 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
           example:
+            status: error
             message: Resource not found
             code: 404
     default:
@@ -71,6 +142,10 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+          example:
+            status: error
+            message: Some error message
+            code: Some error code
   schemas:
     PatientId:
       description: The unique identifier of a patient
@@ -172,9 +247,13 @@ components:
     Error:
       type: object
       required:
+        - status
         - message
         - code
       properties:
+        status:
+          description: human readable exit status
+          type: string
         message:
           description: A human readable error message
           type: string
