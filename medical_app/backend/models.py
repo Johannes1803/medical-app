@@ -27,6 +27,7 @@ class Patient(User):
     medicals: Mapped[List[Medical]] = db.relationship(
         secondary=association_table, back_populates="patients"
     )
+    records: Mapped[List[Record]] = db.relationship()
 
     __mapper_args__ = {
         "polymorphic_identity": "patient",
@@ -43,3 +44,14 @@ class Medical(User):
     __mapper_args__ = {
         "polymorphic_identity": "medical",
     }
+
+
+class Record(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64), nullable=False)
+    description = db.Column(db.String, nullable=False)
+    # symptoms = db.Column(db.ARRAY(db.String))
+    date_diagnosis = db.Column(db.DateTime, nullable=False)
+    date_symptom_onset = db.Column(db.DateTime, nullable=False)
+    date_symptom_offset = db.Column(db.DateTime, nullable=True)
+    parent_id: Mapped[int] = mapped_column(db.ForeignKey("patient.id"))
