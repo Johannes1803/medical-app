@@ -4,6 +4,9 @@ info:
   title: 'medical_app'
   description: Manage patient records for easier access to treatment history
 
+servers:
+  - url: http://127.0.0.1:5000
+
 paths:
   /medics:
     get:
@@ -14,16 +17,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - status
-                  - data
-                properties:
-                  status:
-                    type: string
-                    enum: [success, error]
-                  data:
-                    $ref: '#/components/schemas/MedicArray'
+                $ref: '#/components/schemas/MedicArrayResponseBody'
         default:
           $ref: '#/components/responses/default'
     post:
@@ -40,15 +34,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - status
-                  - data
-                properties:
-                  status:
-                    type: string
-                  data:
-                    $ref: '#/components/schemas/Medic'
+                $ref: '#/components/schemas/MedicResponseBody'
         default:
           $ref: '#/components/responses/default'
   /medics/{medicId}:
@@ -67,19 +53,38 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - status
-                  - data
-                properties:
-                  status:
-                    type: string
-                  data:
-                    $ref: '#/components/schemas/Medic'
+                $ref: '#/components/schemas/MedicResponseBody'
         '404':
           $ref: '#/components/responses/NotFound'  
         default:
           $ref: '#/components/responses/default'
+    delete:
+      summary: Delete a specific medic
+      responses:
+        '200':
+          description: Id of deleted medic
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicIdResponseBody'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+    patch:
+      summary: Update a specific model
+      responses:
+        '200':
+          description: New state of updated Medic
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicResponseBody'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+
   /medics/{medicId}/patients:
     parameters:
     - name: medicId
@@ -96,14 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                required:
-                  - status
-                  - data
-                properties:
-                  status:
-                    type: string
-                  data:
-                    $ref: '#/components/schemas/PatientArray'
+                $ref: '#/components/schemas/PatientArrayResponseBody'
         default:
           $ref: '#/components/responses/default' 
   /patients/{patientId}:
@@ -122,15 +120,33 @@ paths:
           content:
             application/json:
               schema:
-                required:
-                  - status
-                  - data
-                properties:
-                  status:
-                    type: string
-                  data:
-                    $ref: '#/components/schemas/Patient'
-         
+                $ref: '#/components/schemas/PatientResponseBody'
+    delete:
+      summary: Delete a specific patient
+      responses:
+        '200':
+          description: Id of deleted patient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientIdResponseBody'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
+    patch:
+      summary: Update a specific patient
+      responses:
+        '200':
+          description: New state of updated patient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientResponseBody'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/default'
 components:
   responses:
     NotFound:
@@ -154,9 +170,29 @@ components:
             message: Some error message
             code: Some error code
   schemas:
+    SuccessResponseBody:
+      type: object
+      required:
+        - status
+        - data
+      properties:
+        status:
+          type: string
+        data:
+          type: object
     PatientId:
       description: The unique identifier of a patient
       type: string
+    PatientIdResponseBody:
+      description: successful response with id of medic
+      allOf:
+        - $ref: '#/components/schemas/SuccessResponseBody'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/MedicId'
     Patient:
       description: Model of a patient
       type: object
@@ -181,13 +217,41 @@ components:
           $ref: '#/components/schemas/RecordArray'
         medics:
           $ref: '#/components/schemas/MedicArray'
+    PatientResponseBody:
+      allOf:
+        - $ref: '#/components/schemas/SuccessResponseBody'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/Patient'
     PatientArray:
       type: array
       items:
         $ref: '#/components/schemas/Patient'
+    PatientArrayResponseBody:
+      allOf:
+        - $ref: '#/components/schemas/SuccessResponseBody'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/PatientArray'
     MedicId:
       description: The unique identifier of a medical professional
-      type: string
+      type: integer
+    MedicIdResponseBody:
+      description: successful response with array of medics
+      allOf:
+        - $ref: '#/components/schemas/SuccessResponseBody'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/MedicId'
     Medic:
       description: Model of a medical professional
       type: object
@@ -195,7 +259,7 @@ components:
         - firstName
         - lastName
         - email
-        - patients
+        # - patients
       properties:
         id:
           allOf:
@@ -209,6 +273,16 @@ components:
           type: string
         patients:
           $ref: '#/components/schemas/PatientArray'
+    MedicResponseBody:
+      description: successful response with array of medics
+      allOf:
+        - $ref: '#/components/schemas/SuccessResponseBody'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/MedicArray'
     MedicArray:
       description: array of medics
       type: array
@@ -216,6 +290,16 @@ components:
       maxItems: 10
       items:
         $ref: '#/components/schemas/Medic'
+    MedicArrayResponseBody:
+      description: successful response with array of medics
+      allOf:
+        - $ref: '#/components/schemas/SuccessResponseBody'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/MedicArray'
     RecordId:
       description: The unique identifier of a medical record
       type: string
@@ -269,11 +353,9 @@ components:
           type: string
         code:
           description: http error code
-          type: string
+          type: integer
   securitySchemes:
     ApiKey:
       type: apiKey
       in: header
       name: X-Api-Key
-security:
-  - ApiKey: []
