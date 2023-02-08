@@ -8,11 +8,12 @@ flask = "2.2"
 flask-SQLAlchemy = "3"
 Flask-Migrate = "*"
 python-dotenv = "*"
+pyyaml = "*"
+openapi3 = "*"
 
 [dev-packages]
 types-Flask = "*"
-
-
+schemathesis = "*"
 
 [requires]
-python_version = "3.10"
+python_version = "3.9"
