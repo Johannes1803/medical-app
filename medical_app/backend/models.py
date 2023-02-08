@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-
 from sqlalchemy.orm import Mapped, mapped_column
 
 from medical_app.backend import db
