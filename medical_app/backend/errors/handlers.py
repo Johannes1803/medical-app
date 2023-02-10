@@ -1,4 +1,5 @@
 from flask import jsonify
+
 from medical_app.backend.errors import bp
 
 
