@@ -1,7 +1,20 @@
+from typing import List
+
 from flask import Response, abort, jsonify
 
 from medical_app.backend.main import bp
 from medical_app.backend.models import Medical, Patient
+
+
+@bp.route("/medics", methods=["GET"])
+def get_medics() -> Response:
+    medics: List[Medical] = Medical.query.all()
+    return jsonify(
+        {
+            "status": "success",
+            "data": [medic.format_for_json() for medic in medics],
+        }
+    )
 
 
 @bp.route("/medics/<int:medic_id>", methods=["GET"])
