@@ -19,4 +19,8 @@ def create_app(config_class=Config):
 
     app.register_blueprint(main_bp)
 
+    from medical_app.backend.errors import bp as errors_bp
+
+    app.register_blueprint(errors_bp)
+
     return app
