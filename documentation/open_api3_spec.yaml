@@ -1,7 +1,7 @@
-openapi: '3.0.0'
+openapi: "3.0.0"
 info:
-  version: '0.1.0'
-  title: 'medical_app'
+  version: "0.1.0"
+  title: "medical_app"
   description: Manage patient records for easier access to treatment history
 
 servers:
@@ -12,14 +12,14 @@ paths:
     get:
       summary: Get all medics
       responses:
-        '200':
+        "200":
           description: Array of medics, paginated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MedicArrayResponseBody'
+                $ref: "#/components/schemas/MedicArrayResponseBody"
         default:
-          $ref: '#/components/responses/default'
+          $ref: "#/components/responses/default"
     post:
       summary: Create a new medic
       requestBody:
@@ -27,126 +27,126 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Medic'
+              $ref: "#/components/schemas/Medic"
       responses:
-        '200':
+        "200":
           description: Model of the newly created medic
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MedicResponseBody'
+                $ref: "#/components/schemas/MedicResponseBody"
         default:
-          $ref: '#/components/responses/default'
+          $ref: "#/components/responses/default"
   /medics/{medicId}:
     parameters:
-    - name: medicId
-      description: The unique identifier of the Medic
-      in: path
-      required: true
-      schema:
-        $ref: '#/components/schemas/MedicId'
+      - name: medicId
+        description: The unique identifier of the Medic
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/MedicId"
     get:
       summary: Get a specific medic
       responses:
-        '200':
+        "200":
           description: One specific medic
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MedicResponseBody'
-        '404':
-          $ref: '#/components/responses/NotFound'  
+                $ref: "#/components/schemas/MedicResponseBody"
+        "404":
+          $ref: "#/components/responses/NotFound"
         default:
-          $ref: '#/components/responses/default'
+          $ref: "#/components/responses/default"
     delete:
       summary: Delete a specific medic
       responses:
-        '200':
+        "200":
           description: Id of deleted medic
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MedicIdResponseBody'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/MedicIdResponseBody"
+        "404":
+          $ref: "#/components/responses/NotFound"
         default:
-          $ref: '#/components/responses/default'
+          $ref: "#/components/responses/default"
     patch:
       summary: Update a specific model
       responses:
-        '200':
+        "200":
           description: New state of updated Medic
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MedicResponseBody'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/MedicResponseBody"
+        "404":
+          $ref: "#/components/responses/NotFound"
         default:
-          $ref: '#/components/responses/default'
+          $ref: "#/components/responses/default"
 
   /medics/{medicId}/patients:
     parameters:
-    - name: medicId
-      description: The unique identifier of the Medic
-      in: path
-      required: true
-      schema:
-        $ref: '#/components/schemas/MedicId'
+      - name: medicId
+        description: The unique identifier of the Medic
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/MedicId"
     get:
       summary: Get all patients of one medic
       responses:
-        '200':
+        "200":
           description: Array of patients of one medic, paginated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PatientArrayResponseBody'
+                $ref: "#/components/schemas/PatientArrayResponseBody"
         default:
-          $ref: '#/components/responses/default' 
+          $ref: "#/components/responses/default"
   /patients/{patientId}:
     parameters:
-    - name: patientId
-      description: The unique identifier of a patient
-      in: path
-      required: true
-      schema:
-        $ref: '#/components/schemas/PatientId'
+      - name: patientId
+        description: The unique identifier of a patient
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/PatientId"
     get:
       summary: Get specific patient
       responses:
-        '200':
+        "200":
           description: One specific patient
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PatientResponseBody'
+                $ref: "#/components/schemas/PatientResponseBody"
     delete:
       summary: Delete a specific patient
       responses:
-        '200':
+        "200":
           description: Id of deleted patient
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PatientIdResponseBody'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/PatientIdResponseBody"
+        "404":
+          $ref: "#/components/responses/NotFound"
         default:
-          $ref: '#/components/responses/default'
+          $ref: "#/components/responses/default"
     patch:
       summary: Update a specific patient
       responses:
-        '200':
+        "200":
           description: New state of updated patient
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PatientResponseBody'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/PatientResponseBody"
+        "404":
+          $ref: "#/components/responses/NotFound"
         default:
-          $ref: '#/components/responses/default'
+          $ref: "#/components/responses/default"
 components:
   responses:
     NotFound:
@@ -154,7 +154,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             status: error
             message: Resource not found
@@ -164,7 +164,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             status: error
             message: Some error message
@@ -186,13 +186,13 @@ components:
     PatientIdResponseBody:
       description: successful response with id of medic
       allOf:
-        - $ref: '#/components/schemas/SuccessResponseBody'
+        - $ref: "#/components/schemas/SuccessResponseBody"
         - type: object
           required:
             - data
           properties:
             data:
-              $ref: '#/components/schemas/MedicId'
+              $ref: "#/components/schemas/MedicId"
     Patient:
       description: Model of a patient
       type: object
@@ -205,8 +205,8 @@ components:
       properties:
         id:
           allOf:
-          - $ref: '#/components/schemas/PatientId'
-          - readOnly: true
+            - $ref: "#/components/schemas/PatientId"
+            - readOnly: true
         firstName:
           type: string
         lastName:
@@ -214,44 +214,44 @@ components:
         email:
           type: string
         records:
-          $ref: '#/components/schemas/RecordArray'
+          $ref: "#/components/schemas/RecordArray"
         medics:
-          $ref: '#/components/schemas/MedicArray'
+          $ref: "#/components/schemas/MedicArray"
     PatientResponseBody:
       allOf:
-        - $ref: '#/components/schemas/SuccessResponseBody'
+        - $ref: "#/components/schemas/SuccessResponseBody"
         - type: object
           required:
             - data
           properties:
             data:
-              $ref: '#/components/schemas/Patient'
+              $ref: "#/components/schemas/Patient"
     PatientArray:
       type: array
       items:
-        $ref: '#/components/schemas/Patient'
+        $ref: "#/components/schemas/Patient"
     PatientArrayResponseBody:
       allOf:
-        - $ref: '#/components/schemas/SuccessResponseBody'
+        - $ref: "#/components/schemas/SuccessResponseBody"
         - type: object
           required:
             - data
           properties:
             data:
-              $ref: '#/components/schemas/PatientArray'
+              $ref: "#/components/schemas/PatientArray"
     MedicId:
       description: The unique identifier of a medical professional
       type: integer
     MedicIdResponseBody:
       description: successful response with array of medics
       allOf:
-        - $ref: '#/components/schemas/SuccessResponseBody'
+        - $ref: "#/components/schemas/SuccessResponseBody"
         - type: object
           required:
             - data
           properties:
             data:
-              $ref: '#/components/schemas/MedicId'
+              $ref: "#/components/schemas/MedicId"
     Medic:
       description: Model of a medical professional
       type: object
@@ -263,8 +263,8 @@ components:
       properties:
         id:
           allOf:
-          - $ref: '#/components/schemas/MedicId'
-          - readOnly: true
+            - $ref: "#/components/schemas/MedicId"
+            - readOnly: true
         firstName:
           type: string
         lastName:
@@ -272,34 +272,34 @@ components:
         email:
           type: string
         patients:
-          $ref: '#/components/schemas/PatientArray'
+          $ref: "#/components/schemas/PatientArray"
     MedicResponseBody:
       description: successful response with array of medics
       allOf:
-        - $ref: '#/components/schemas/SuccessResponseBody'
+        - $ref: "#/components/schemas/SuccessResponseBody"
         - type: object
           required:
             - data
           properties:
             data:
-              $ref: '#/components/schemas/MedicArray'
+              $ref: "#/components/schemas/MedicArray"
     MedicArray:
       description: array of medics
       type: array
       minItems: 0
       maxItems: 10
       items:
-        $ref: '#/components/schemas/Medic'
+        $ref: "#/components/schemas/Medic"
     MedicArrayResponseBody:
       description: successful response with array of medics
       allOf:
-        - $ref: '#/components/schemas/SuccessResponseBody'
+        - $ref: "#/components/schemas/SuccessResponseBody"
         - type: object
           required:
             - data
           properties:
             data:
-              $ref: '#/components/schemas/MedicArray'
+              $ref: "#/components/schemas/MedicArray"
     RecordId:
       description: The unique identifier of a medical record
       type: string
@@ -315,8 +315,8 @@ components:
       properties:
         id:
           allOf:
-          - $ref: '#/components/schemas/RecordId'
-          - readOnly: true
+            - $ref: "#/components/schemas/RecordId"
+            - readOnly: true
         title:
           type: string
         description:
@@ -337,7 +337,7 @@ components:
     RecordArray:
       type: array
       items:
-        $ref: '#/components/schemas/Record'
+        $ref: "#/components/schemas/Record"
     Error:
       type: object
       required:
