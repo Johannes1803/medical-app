@@ -1,7 +1,7 @@
-from flask import abort, jsonify, Response
+from flask import Response, abort, jsonify
 
 from medical_app.backend.main import bp
-from medical_app.backend.models import Medical, Patient, User
+from medical_app.backend.models import Medical, Patient
 
 
 @bp.route("/", methods=["GET"])
@@ -15,4 +15,9 @@ def get_medic(medic_id) -> Response:
     if not medic:
         abort(404)
     else:
-        return jsonify(medic.format_for_json())
+        return jsonify(
+            {
+                "status": "success",
+                "data": medic.format_for_json(),
+            }
+        )
