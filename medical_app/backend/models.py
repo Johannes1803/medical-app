@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Mapped, mapped_column
+
 from medical_app.backend import db
-from flask import current_app
 
 
 def prune_keys_with_none_value(input_dict: dict) -> dict:
@@ -22,6 +22,19 @@ class User(db.Model):
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), unique=True, nullable=False)
+
+    def _to_dict(self) -> Dict[str, Any]:
+        """Return dict representation of user.
+
+        :param medicals_long_form: whether to include medical as long format, defaults to True. Set to false to avoid recursion.
+        :return: dict representation of class
+        """
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+        }
 
 
 association_table = db.Table(
@@ -48,13 +61,7 @@ class Patient(User):
 
         :return: dict representation of classs
         """
-
-        format_dict = {
-            "id": self.id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "email": self.email,
-        }
+        format_dict = super()._to_dict()
         format_dict["records"] = (
             [record.format_for_json() for record in self.records],
         )
@@ -67,13 +74,12 @@ class Patient(User):
         :return: dict representation of class to be jsonified
         """
         format_dict = self._to_dict()
-        with current_app.app_context():
-            if include_medicals_long:
-                format_dict["medicals"] = [
-                    medic.format(include_patients_long=False) for medic in self.medicals
-                ]
-            else:
-                format_dict["medicals"] = [medic.id for medic in self.medicals]
+        if include_medicals_long:
+            format_dict["medicals"] = [
+                medic.format(include_patients_long=False) for medic in self.medicals
+            ]
+        else:
+            format_dict["medicals"] = [medic.id for medic in self.medicals]
         return prune_keys_with_none_value(format_dict)
 
 
@@ -88,14 +94,6 @@ class Medical(User):
         "polymorphic_identity": "medical",
     }
 
-    def _to_dict(self):
-        return {
-            "id": self.id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "email": self.email,
-        }
-
     def format_for_json(self, include_patients_long: bool = True) -> Dict[str, Any]:
         """Return dict that can easily be jsonified.
 
@@ -103,14 +101,13 @@ class Medical(User):
         :return: dict representation of class to be jsonified
         """
         format_dict = self._to_dict()
-        with current_app.app_context():
-            if include_patients_long:
-                format_dict["patients"] = [
-                    patient.format_for_json(include_medicals_long=False)
-                    for patient in self.patients
-                ]
-            else:
-                format_dict["patients"] = [patient.id for patient in self.patients]
+        if include_patients_long:
+            format_dict["patients"] = [
+                patient.format_for_json(include_medicals_long=False)
+                for patient in self.patients
+            ]
+        else:
+            format_dict["patients"] = [patient.id for patient in self.patients]
         return prune_keys_with_none_value(format_dict)
 
     def insert(self):
@@ -121,7 +118,9 @@ class Medical(User):
             # ToDo: log error
             db.session.rollback()
         finally:
+            medic_dict_to_be_jsonified = self.format_for_json()
             db.session.close()
+            return medic_dict_to_be_jsonified
 
 
 class Record(db.Model):
