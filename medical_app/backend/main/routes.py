@@ -1,7 +1,8 @@
 from typing import List
 
-from flask import Response, abort, jsonify
+from flask import Response, abort, current_app, jsonify, request
 
+from medical_app.backend import db
 from medical_app.backend.main import bp
 from medical_app.backend.models import Medical, Patient
 
@@ -15,6 +16,23 @@ def get_medics() -> Response:
             "data": [medic.format_for_json() for medic in medics],
         }
     )
+
+
+@bp.route("/medics", methods=["POST"])
+def create_new_medic() -> Response:
+    with current_app.app_context():
+        try:
+            medic = Medical(
+                first_name=request.json["firstName"],
+                last_name=request.json["lastName"],
+                email=request.json["email"],
+                patients=request.json["patients"],
+            )
+        except KeyError:
+            abort(422)
+        else:
+            medic_dict = medic.insert()
+            return jsonify({"status": "success", "data": medic_dict})
 
 
 @bp.route("/medics/<int:medic_id>", methods=["GET"])
