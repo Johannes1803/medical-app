@@ -103,3 +103,19 @@ def get_patient(patient_id: int) -> Response:
         abort(404)
     else:
         return jsonify({"status": "success", "data": patient.format_for_json()})
+
+
+@bp.route("/patients/<int:patient_id>", methods=["DELETE"])
+def delete_patient(patient_id) -> Response:
+    patient: Patient = Patient.query.get(patient_id)
+    if not patient:
+        abort(404)
+    else:
+        patient_id = patient.id
+        patient.delete()
+        return jsonify(
+            {
+                "status": "success",
+                "data": patient_id,
+            }
+        )
