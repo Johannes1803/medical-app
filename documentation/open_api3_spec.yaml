@@ -36,7 +36,7 @@ paths:
             schema:
               $ref: "#/components/schemas/Medic"
       responses:
-        "200":
+        "201":
           description: Model of the newly created medic
           content:
             application/json:
@@ -109,6 +109,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PatientArrayResponseBody"
+        default:
+          $ref: "#/components/responses/default"
+  /patients:
+    post:
+      summary: Create a new patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Patient"
+      responses:
+        "201":
+          description: Model of the newly created patient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientResponseBody"
         default:
           $ref: "#/components/responses/default"
   /patients/{patientId}:
