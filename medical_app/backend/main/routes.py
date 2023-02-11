@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from flask import Response, abort, current_app, jsonify, request
 
@@ -18,7 +18,7 @@ def get_medics() -> Response:
 
 
 @bp.route("/medics", methods=["POST"])
-def create_new_medic() -> Response:
+def create_new_medic() -> Tuple[Response, int]:
     with current_app.app_context():
         try:
             medic = Medical(
@@ -31,7 +31,7 @@ def create_new_medic() -> Response:
             abort(422)
         else:
             medic_dict = medic.insert()
-            return jsonify({"status": "success", "data": medic_dict})
+            return jsonify({"status": "success", "data": medic_dict}), 201
 
 
 @bp.route("/medics/<int:medic_id>", methods=["GET"])
@@ -89,7 +89,7 @@ def get_patient(patient_id: int) -> Response:
 
 
 @bp.route("/patients", methods=["POST"])
-def create() -> Response:
+def create() -> Tuple[Response, int]:
     with current_app.app_context():
         try:
             patient = Patient(
@@ -102,4 +102,4 @@ def create() -> Response:
             abort(422)
         else:
             patient_dict = patient.insert()
-            return jsonify({"status": "success", "data": patient_dict})
+            return jsonify({"status": "success", "data": patient_dict}), 201

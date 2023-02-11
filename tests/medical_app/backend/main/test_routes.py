@@ -3,12 +3,12 @@ import flask
 from medical_app.backend.models import Medical, Patient
 
 
-def assert_success_response_structure(res) -> None:
+def assert_success_response_structure(res, expected_status_code: int = 200) -> None:
     """Validate success response structure.
 
     :param res: flask response object
     """
-    assert res.status_code == 200
+    assert res.status_code == expected_status_code
     assert res.json["status"] == "success"
     assert res.json["data"]
 
@@ -59,7 +59,7 @@ def test_post_medic_should_create_new_medic(app):
     )
 
     # test response boilerplate
-    assert_success_response_structure(res)
+    assert_success_response_structure(res, expected_status_code=201)
 
     # assert the id of the newly created medic is returned
     new_medic_id = res.json["data"].get("id")
@@ -216,7 +216,7 @@ def test_post_patient_should_create_new_patient(app):
     )
 
     # test response boilerplate
-    assert_success_response_structure(res)
+    assert_success_response_structure(res, expected_status_code=201)
 
     # assert the id of the newly created medic is returned
     new_patient_id = res.json["data"].get("id")
