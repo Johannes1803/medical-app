@@ -61,9 +61,7 @@ def populate_test_db():
     )
     db.session.add(patient_3)
 
-    patient_4 = Patient(
-        first_name="Lena", last_name="Pitt", email="Lena.smith@mail.com"
-    )
+    patient_4 = Patient(first_name="Lena", last_name="Pitt", email="Lena.pitt@mail.com")
     db.session.add(patient_4)
     db.session.commit()
 
