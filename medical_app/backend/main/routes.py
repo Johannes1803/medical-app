@@ -79,15 +79,6 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
         )
 
 
-@bp.route("/patients/<int:patient_id>", methods=["GET"])
-def get_patient(patient_id: int) -> Response:
-    patient: Patient = Patient.query.get(patient_id)
-    if not patient:
-        abort(404)
-    else:
-        return jsonify({"status": "success", "data": patient.format_for_json()})
-
-
 @bp.route("/patients", methods=["POST"])
 def create() -> Tuple[Response, int]:
     with current_app.app_context():
@@ -103,3 +94,12 @@ def create() -> Tuple[Response, int]:
         else:
             patient_dict = patient.insert()
             return jsonify({"status": "success", "data": patient_dict}), 201
+
+
+@bp.route("/patients/<int:patient_id>", methods=["GET"])
+def get_patient(patient_id: int) -> Response:
+    patient: Patient = Patient.query.get(patient_id)
+    if not patient:
+        abort(404)
+    else:
+        return jsonify({"status": "success", "data": patient.format_for_json()})
