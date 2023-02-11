@@ -130,6 +130,9 @@ def test_delete_medic_should_remove_medic_from_db(app):
 
     assert_success_response_structure(res)
 
+    # assert medic is no longer in db
+    assert Medical.query.get(1) is None
+
     # test response contains medic id
     assert res.json["data"] == 1
 
@@ -248,3 +251,44 @@ def test_post_patient_missing_attribute_should_raise_422(app):
     assert_error_response_structure(res)
 
     assert res.json["code"] == 422
+
+
+def test_delete_patient_should_remove_patient_from_db(app):
+    """Test delete patient removes patient from db.
+
+    This includes removing the patient from the list of patients of each medic.
+
+    :param app: flask app instance
+    """
+    patient_id = 5
+
+    # get patient ids associated with medic before deletion
+    patient = Patient.query.get(patient_id)
+    assert patient
+    medic_ids = [medic.id for medic in patient.medicals]
+
+    res: flask.Response = app.test_client().delete(f"/patients/{patient_id}")
+
+    assert_success_response_structure(res)
+
+    # verify patient was deleted
+    assert Patient.query.get(patient_id) is None
+
+    # test response contains patient id
+    assert res.json["data"] == patient_id
+
+    # test no former medic still has patient in his list of patients
+    medics = Medical.query.filter(Medical.id.in_(medic_ids)).all()
+    for medic in medics:
+        assert patient not in medic.patients
+
+
+def test_delete_patient_non_existing_should_return_404(app) -> None:
+    """Test trying to delete a non existing patient raises 404.
+
+    :param app: flask app instance
+    """
+    res: flask.Response = app.test_client().delete("/patients/1000000")
+
+    assert_error_response_structure(res)
+    assert res.status_code == 404
