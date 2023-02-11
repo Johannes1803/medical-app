@@ -76,7 +76,8 @@ class Patient(User):
         format_dict = self._to_dict()
         if include_medicals_long:
             format_dict["medicals"] = [
-                medic.format(include_patients_long=False) for medic in self.medicals
+                medic.format_for_json(include_patients_long=False)
+                for medic in self.medicals
             ]
         else:
             format_dict["medicals"] = [medic.id for medic in self.medicals]
