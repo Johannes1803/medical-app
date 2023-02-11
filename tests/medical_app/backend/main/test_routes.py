@@ -111,9 +111,8 @@ def test_get_medic_non_existing_should_return_404(app) -> None:
     """
     res: flask.Response = app.test_client().get("/medics/1000000")
 
-    assert res.status_code == 404
-
     assert_error_response_structure(res)
+    assert res.status_code == 404
 
 
 def test_delete_medic_should_remove_medic_from_db(app):
@@ -147,9 +146,8 @@ def test_delete_medic_non_existing_should_return_404(app) -> None:
     """
     res: flask.Response = app.test_client().delete("/medics/1000000")
 
-    assert res.status_code == 404
-
     assert_error_response_structure(res)
+    assert res.status_code == 404
 
 
 def test_get_patients_of_medic(app) -> None:
@@ -172,6 +170,26 @@ def test_get_patients_of_medic_non_existing_should_return_404(app) -> None:
     """
     res: flask.Response = app.test_client().get("/medics/1000000/patients")
 
+    assert_error_response_structure(res)
     assert res.status_code == 404
 
+
+def test_get_patient_should_return_patient(app):
+    """Test get patient returns patient.
+
+    :param app: flask app instance
+    """
+    res: flask.Response = app.test_client().get("/patients/5")
+
+    assert_success_response_structure(res)
+
+
+def test_get_patient_non_existing_should_return_404(app):
+    """Test get patient returns patient.
+
+    :param app: flask app instance
+    """
+    res: flask.Response = app.test_client().get("/patients/50")
+
     assert_error_response_structure(res)
+    assert res.status_code == 404
