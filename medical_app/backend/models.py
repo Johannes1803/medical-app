@@ -11,8 +11,8 @@ from medical_app.backend import db
 def prune_keys_with_none_value(input_dict: dict) -> dict:
     """Remove keys if value is None
 
-    :param input_dict: _description_
-    :return: _description_
+    :param input_dict: dict with potential none valuse
+    :return: pruned dict
     """
     return {k: v for k, v in input_dict.items() if v is not None}
 
@@ -59,7 +59,7 @@ class Patient(User):
     def _to_dict(self) -> Dict[str, Any]:
         """Return dict representation of patient.
 
-        :return: dict representation of classs
+        :return: dict representation of class
         """
         format_dict = super()._to_dict()
         format_dict["records"] = (
@@ -110,7 +110,11 @@ class Medical(User):
             format_dict["patients"] = [patient.id for patient in self.patients]
         return prune_keys_with_none_value(format_dict)
 
-    def insert(self):
+    def insert(self) -> Dict[str, Any]:
+        """Insert medic into db.
+
+        :return: dict representation of medic.
+        """
         try:
             db.session.add(self)
             db.session.commit()
@@ -121,6 +125,21 @@ class Medical(User):
             medic_dict_to_be_jsonified = self.format_for_json()
             db.session.close()
             return medic_dict_to_be_jsonified
+
+    def delete(self) -> int:
+        """Delete medic from db
+
+        :return: id of deleted medic
+        """
+        try:
+            medic_id = db.session.delete(self)
+            db.session.commit()
+        except SQLAlchemyError:
+            # ToDo: log error
+            db.session.rollback()
+        finally:
+            db.session.close()
+            return medic_id
 
 
 class Record(db.Model):
