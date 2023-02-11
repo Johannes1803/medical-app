@@ -77,3 +77,12 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
                 "data": response_data,
             }
         )
+
+
+@bp.route("/patients/<int:patient_id>", methods=["GET"])
+def get_patient(patient_id: int) -> Response:
+    patient: Patient = Patient.query.get(patient_id)
+    if not patient:
+        abort(404)
+    else:
+        return jsonify({"status": "success", "data": patient.format_for_json()})
