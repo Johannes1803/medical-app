@@ -86,3 +86,20 @@ def get_patient(patient_id: int) -> Response:
         abort(404)
     else:
         return jsonify({"status": "success", "data": patient.format_for_json()})
+
+
+@bp.route("/patients", methods=["POST"])
+def create() -> Response:
+    with current_app.app_context():
+        try:
+            patient = Patient(
+                first_name=request.json["firstName"],
+                last_name=request.json["lastName"],
+                email=request.json["email"],
+                medicals=request.json["medicals"],
+            )
+        except KeyError:
+            abort(422)
+        else:
+            patient_dict = patient.insert()
+            return jsonify({"status": "success", "data": patient_dict})
