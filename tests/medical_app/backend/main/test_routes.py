@@ -58,6 +58,21 @@ def test_post_medic_should_create_new_medic(app):
     assert n_medics_before + 1 == n_medics_after
 
 
+def test_post_medic_missing_attribute_should_raise_422(app):
+    res = app.test_client().post(
+        "/medics",
+        json={
+            "firstName": "Marc",
+            "email": "marc.tester@gmail.com",
+            "patients": [],
+        },
+    )
+
+    assert_error_response_structure(res)
+
+    assert res.json["code"] == 422
+
+
 def test_get_medic_should_return_medic(app) -> None:
     # ToDo: Link medic id to test setup
     res: flask.Response = app.test_client().get("/medics/1")
