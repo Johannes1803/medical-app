@@ -62,3 +62,18 @@ def delete_medic(medic_id) -> Response:
                 "data": medic_id,
             }
         )
+
+
+@bp.route("/medics/<int:medic_id>/patients", methods=["GET"])
+def get_patients_of_specific_medic(medic_id: int) -> Response:
+    medic: Medical = Medical.query.get(medic_id)
+    if not medic:
+        abort(404)
+    else:
+        response_data = [patient.format_for_json() for patient in medic.patients]
+        return jsonify(
+            {
+                "status": "success",
+                "data": response_data,
+            }
+        )
