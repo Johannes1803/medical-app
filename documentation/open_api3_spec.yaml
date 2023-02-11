@@ -11,6 +11,13 @@ paths:
   /medics:
     get:
       summary: Get all medics
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+          description: The page number in the results
       responses:
         "200":
           description: Array of medics, paginated
