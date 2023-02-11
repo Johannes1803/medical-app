@@ -229,3 +229,22 @@ def test_post_patient_should_create_new_patient(app):
     patients = Patient.query.all()
     n_patients_after = len(patients)
     assert n_patients_before + 1 == n_patients_after
+
+
+def test_post_patient_missing_attribute_should_raise_422(app):
+    """Test post medic with missing attribute raises 422 error.
+
+    :param app: flask app instance
+    """
+    res = app.test_client().post(
+        "/patients",
+        json={
+            "firstName": "Marc",
+            "lastName": "Tester",
+            "patients": [],
+        },
+    )
+
+    assert_error_response_structure(res)
+
+    assert res.json["code"] == 422
