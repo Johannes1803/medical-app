@@ -193,3 +193,39 @@ def test_get_patient_non_existing_should_return_404(app):
 
     assert_error_response_structure(res)
     assert res.status_code == 404
+
+
+def test_post_patient_should_create_new_patient(app):
+    """Test post patient returns patient.
+
+    :param app: flask app instance
+    """
+    # count medics before creating a new one
+    patients = Patient.query.all()
+    n_patients_before = len(patients)
+
+    # create new medic
+    res = app.test_client().post(
+        "/patients",
+        json={
+            "firstName": "Anna",
+            "lastName": "Patient",
+            "email": "anna.patient@gmail.com",
+            "medicals": [],
+        },
+    )
+
+    # test response boilerplate
+    assert_success_response_structure(res)
+
+    # assert the id of the newly created medic is returned
+    new_patient_id = res.json["data"].get("id")
+    assert new_patient_id
+
+    # check new medic is in db
+    assert Patient.query.get(new_patient_id)
+
+    # check medics count increased by one
+    patients = Patient.query.all()
+    n_patients_after = len(patients)
+    assert n_patients_before + 1 == n_patients_after
