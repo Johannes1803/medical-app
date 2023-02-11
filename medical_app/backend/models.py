@@ -23,10 +23,9 @@ class User(db.Model):
     last_name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), unique=True, nullable=False)
 
-    def _to_dict(self) -> Dict[str, Any]:
+    def format_for_json(self, **kwargs) -> Dict[str, Any]:
         """Return dict representation of user.
 
-        :param medicals_long_form: whether to include medical as long format, defaults to True. Set to false to avoid recursion.
         :return: dict representation of class
         """
         return {
@@ -35,6 +34,37 @@ class User(db.Model):
             "last_name": self.last_name,
             "email": self.email,
         }
+
+    def insert(self) -> Dict[str, Any]:
+        """Insert user into db.
+
+        :return: dict representation of user.
+        """
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except SQLAlchemyError:
+            # ToDo: log error
+            db.session.rollback()
+        finally:
+            instance_dict_to_be_jsonified = self.format_for_json()
+            db.session.close()
+            return instance_dict_to_be_jsonified
+
+    def delete(self) -> int:
+        """Delete user from db
+
+        :return: id of deleted user
+        """
+        try:
+            user_id = db.session.delete(self)
+            db.session.commit()
+        except SQLAlchemyError:
+            # ToDo: log error
+            db.session.rollback()
+        finally:
+            db.session.close()
+            return user_id
 
 
 association_table = db.Table(
@@ -56,25 +86,17 @@ class Patient(User):
         "polymorphic_identity": "patient",
     }
 
-    def _to_dict(self) -> Dict[str, Any]:
-        """Return dict representation of patient.
-
-        :return: dict representation of class
-        """
-        format_dict = super()._to_dict()
-        format_dict["records"] = (
-            [record.format_for_json() for record in self.records],
-        )
-        return format_dict
-
-    def format_for_json(self, include_medicals_long: bool = True) -> Dict[str, Any]:
+    def format_for_json(self, **kwargs) -> Dict[str, Any]:
         """Return dict that can easily be jsonified.
 
         :param include_medicals_long: Whether to include detailed representation of medicals, defaults to True
         :return: dict representation of class to be jsonified
         """
-        format_dict = self._to_dict()
-        if include_medicals_long:
+        format_dict = super().format_for_json(**kwargs)
+        format_dict["records"] = (
+            [record.format_for_json() for record in self.records],
+        )
+        if kwargs.get("include_medicals_long"):
             format_dict["medicals"] = [
                 medic.format_for_json(include_patients_long=False)
                 for medic in self.medicals
@@ -95,14 +117,14 @@ class Medical(User):
         "polymorphic_identity": "medical",
     }
 
-    def format_for_json(self, include_patients_long: bool = True) -> Dict[str, Any]:
+    def format_for_json(self, **kwargs) -> Dict[str, Any]:
         """Return dict that can easily be jsonified.
 
         :param include_medicals_long: Whether to include detailed representation of medicals, defaults to True
         :return: dict representation of class to be jsonified
         """
-        format_dict = self._to_dict()
-        if include_patients_long:
+        format_dict = super().format_for_json(**kwargs)
+        if kwargs.get("include_patients_long"):
             format_dict["patients"] = [
                 patient.format_for_json(include_medicals_long=False)
                 for patient in self.patients
@@ -110,37 +132,6 @@ class Medical(User):
         else:
             format_dict["patients"] = [patient.id for patient in self.patients]
         return prune_keys_with_none_value(format_dict)
-
-    def insert(self) -> Dict[str, Any]:
-        """Insert medic into db.
-
-        :return: dict representation of medic.
-        """
-        try:
-            db.session.add(self)
-            db.session.commit()
-        except SQLAlchemyError:
-            # ToDo: log error
-            db.session.rollback()
-        finally:
-            medic_dict_to_be_jsonified = self.format_for_json()
-            db.session.close()
-            return medic_dict_to_be_jsonified
-
-    def delete(self) -> int:
-        """Delete medic from db
-
-        :return: id of deleted medic
-        """
-        try:
-            medic_id = db.session.delete(self)
-            db.session.commit()
-        except SQLAlchemyError:
-            # ToDo: log error
-            db.session.rollback()
-        finally:
-            db.session.close()
-            return medic_id
 
 
 class Record(db.Model):
