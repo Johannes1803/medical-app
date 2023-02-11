@@ -148,3 +148,28 @@ def test_delete_medic_non_existing_should_return_404(app) -> None:
     assert res.status_code == 404
 
     assert_error_response_structure(res)
+
+
+def test_get_patients_of_medic(app) -> None:
+    """Test get patients of medic returns array of patients.
+
+    :param app: flask app instance
+    """
+    res: flask.Response = app.test_client().get("/medics/1/patients")
+
+    assert_success_response_structure(res)
+
+    # we know that medic one has a patient
+    assert len(res.json["data"]) > 0
+
+
+def test_get_patients_of_medic_non_existing_should_return_404(app) -> None:
+    """Test get medic with non-existing id raises 404 error.
+
+    :param app: flask app instance
+    """
+    res: flask.Response = app.test_client().get("/medics/1000000/patients")
+
+    assert res.status_code == 404
+
+    assert_error_response_structure(res)
