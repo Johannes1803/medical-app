@@ -157,7 +157,7 @@ def test_get_patients_of_medic(app) -> None:
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().get("/medics/1/patients")
+    res: flask.Response = app.test_client().get("/medics/2/patients")
 
     assert_success_response_structure(res)
 

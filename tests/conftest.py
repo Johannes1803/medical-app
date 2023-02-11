@@ -41,20 +41,42 @@ def populate_test_db():
     med_1 = Medical(first_name="John", last_name="Doc", email="john.doc@mail.com")
     db.session.add(med_1)
 
-    patient = Patient(
+    med_2 = Medical(
+        first_name="Carla", last_name="Health", email="carla.health@mail.com"
+    )
+    db.session.add(med_2)
+
+    patient_1 = Patient(
         first_name="Mister", last_name="Patient", email="patient@mail.com"
     )
-    db.session.add(patient)
+    db.session.add(patient_1)
 
-    patient.medicals.append(med_1)
+    patient_2 = Patient(
+        first_name="Anthony", last_name="Smith", email="Anthony.Smith@gmx.com"
+    )
+    db.session.add(patient_2)
+
+    patient_3 = Patient(
+        first_name="Laura", last_name="Oneal", email="laura.oneal@mail.com"
+    )
+    db.session.add(patient_3)
+
+    patient_4 = Patient(
+        first_name="Lena", last_name="Pitt", email="Lena.smith@mail.com"
+    )
+    db.session.add(patient_4)
     db.session.commit()
+
+    patient_1.medicals += [med_1, med_2]
+    patient_2.medicals.append(med_1)
+    patient_3.medicals.append(med_2)
 
     record = Record(
         title="Flew",
         description="influenca season",
         date_diagnosis=datetime.datetime.strptime("2022-12-01", "%Y-%m-%d"),
         date_symptom_onset=datetime.datetime.strptime("2022-11-21", "%Y-%m-%d"),
-        patient_id=patient.id,
+        patient_id=patient_1.id,
     )
     db.session.add(record)
     db.session.commit()
