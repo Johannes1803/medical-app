@@ -1,6 +1,6 @@
 import flask
 
-from medical_app.backend.models import Medical
+from medical_app.backend.models import Medical, Patient
 
 
 def assert_success_response_structure(res) -> None:
@@ -135,7 +135,9 @@ def test_delete_medic_should_remove_medic_from_db(app):
     assert res.json["data"] == 1
 
     # test no former patient still has medic in his list of medics
-    # ToDo
+    patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()
+    for patient in patients:
+        assert medic not in patient.medicals
 
 
 def test_delete_medic_non_existing_should_return_404(app) -> None:
