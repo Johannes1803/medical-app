@@ -47,7 +47,7 @@ paths:
   /medics/{medicId}:
     parameters:
       - name: medicId
-        description: The unique identifier of the Medic
+        description: The unique identifier of the medic
         in: path
         required: true
         schema:
@@ -79,10 +79,10 @@ paths:
         default:
           $ref: "#/components/responses/default"
     patch:
-      summary: Update a specific model
+      summary: Update a specific medic
       responses:
         "200":
-          description: New state of updated Medic
+          description: New state of updated medic
           content:
             application/json:
               schema:
@@ -95,7 +95,7 @@ paths:
   /medics/{medicId}/patients:
     parameters:
       - name: medicId
-        description: The unique identifier of the Medic
+        description: The unique identifier of the medic
         in: path
         required: true
         schema:
@@ -181,13 +181,13 @@ paths:
   /patients/{patientId}/records:
     parameters:
       - name: patientId
-        description: The unique identifier of the Patient
+        description: The unique identifier of the patient
         in: path
         required: true
         schema:
           $ref: "#/components/schemas/MedicId"
     get:
-      description: Get all records of one patient
+      summary: Get all records of one patient
       parameters:
         - in: query
           name: page
@@ -205,7 +205,7 @@ paths:
         default:
           $ref: "#/components/responses/default"
     post:
-      description: Add new record to patient
+      summary: Add new record to patient
       responses:
         "201":
           description: Model of the newly created medical record
@@ -215,6 +215,47 @@ paths:
                 $ref: "#/components/schemas/RecordResponseBody"
         default:
           $ref: "#/components/responses/default"
+  /patients/{patientId}/records/{recordId}:
+    parameters:
+      - name: patientId
+        description: The unique identifier of the patient
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/PatientId"
+      - name: recordId
+        description: The unique identifier of the record
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/RecordId"
+    get:
+      summary: Get specific record
+      responses:
+        "200":
+          description: Specific record of specific patient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecordResponseBody"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/default"
+    delete:
+      summary: Delete a specific record
+      responses:
+        "200":
+          description: Id of deleted recrod
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecordIdResponseBody"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/default"
+  
 components:
   responses:
     NotFound:
@@ -371,6 +412,16 @@ components:
     RecordId:
       description: The unique identifier of a medical record
       type: string
+    RecordIdResponseBody:
+      description: successful response with one record
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponseBody"
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: "#/components/schemas/RecordId"
     Record:
       description: Model of a medical record
       type: object
