@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Sequence, Tuple
 
 from flask import Response, abort, current_app, jsonify, request
 
@@ -6,13 +6,33 @@ from medical_app.backend.main import bp
 from medical_app.backend.models import Medical, Patient
 
 
+def paginate(collection_: Sequence, offset: int = 0, limit: int = 10) -> Sequence:
+    """Return paginated range of collection.
+
+    :param collection_: indexable sequence of objects
+    :param offset: return elements starting from offset index position
+    :param limit: maximum number of elements to return,
+            actual returned number can be lower if there are less elements in collection after offset.
+    :return: collection from offset to offest + limit
+    """
+    end_index = offset + limit
+    return collection_[offset:end_index]
+
+
 @bp.route("/medics", methods=["GET"])
 def get_medics() -> Response:
+    offset = request.args.get("offset", 0, type=int)
+    limit = request.args.get("limit", 10, type=int)
+
     medics: List[Medical] = Medical.query.all()
     return jsonify(
         {
             "status": "success",
-            "data": [medic.format_for_json() for medic in medics],
+            "data": paginate(
+                [medic.format_for_json() for medic in medics],
+                offset=offset,
+                limit=limit,
+            ),
         }
     )
 
@@ -66,11 +86,18 @@ def delete_medic(medic_id) -> Response:
 
 @bp.route("/medics/<int:medic_id>/patients", methods=["GET"])
 def get_patients_of_specific_medic(medic_id: int) -> Response:
+    offset = request.args.get("offset", 0, type=int)
+    limit = request.args.get("limit", 10, type=int)
+
     medic: Medical = Medical.query.get(medic_id)
     if not medic:
         abort(404)
     else:
-        response_data = [patient.format_for_json() for patient in medic.patients]
+        response_data = paginate(
+            [patient.format_for_json() for patient in medic.patients],
+            offset=offset,
+            limit=limit,
+        )
         return jsonify(
             {
                 "status": "success",
@@ -123,6 +150,9 @@ def delete_patient(patient_id) -> Response:
 
 @bp.route("/patients/<int:patient_id>/records", methods=["GET"])
 def get_records_of_one_patient(patient_id):
+    offset = request.args.get("offset", 0, type=int)
+    limit = request.args.get("limit", 10, type=int)
+
     patient: Patient = Patient.query.get(patient_id)
     if not patient:
         abort(404)
@@ -130,6 +160,10 @@ def get_records_of_one_patient(patient_id):
         return jsonify(
             {
                 "status": "success",
-                "data": [record.format_for_json() for record in patient.records],
+                "data": paginate(
+                    [record.format_for_json() for record in patient.records],
+                    limit=limit,
+                    offset=offset,
+                ),
             }
         )
