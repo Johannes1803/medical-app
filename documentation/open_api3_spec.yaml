@@ -178,6 +178,43 @@ paths:
           $ref: "#/components/responses/NotFound"
         default:
           $ref: "#/components/responses/default"
+  /patients/{patientId}/records:
+    parameters:
+      - name: patientId
+        description: The unique identifier of the Patient
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/MedicId"
+    get:
+      description: Get all records of one patient
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+          description: The page number in the results
+      responses:
+        "200":
+          description: Records of patient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecordArrayResponseBody"
+        default:
+          $ref: "#/components/responses/default"
+    post:
+      description: Add new record to patient
+      responses:
+        "201":
+          description: Model of the newly created medical record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecordResponseBody"
+        default:
+          $ref: "#/components/responses/default"
 components:
   responses:
     NotFound:
@@ -305,7 +342,7 @@ components:
         patients:
           $ref: "#/components/schemas/PatientArray"
     MedicResponseBody:
-      description: successful response with array of medics
+      description: successful response with medic
       allOf:
         - $ref: "#/components/schemas/SuccessResponseBody"
         - type: object
@@ -313,7 +350,7 @@ components:
             - data
           properties:
             data:
-              $ref: "#/components/schemas/MedicArray"
+              $ref: "#/components/schemas/Medic"
     MedicArray:
       description: array of medics
       type: array
@@ -365,10 +402,30 @@ components:
         date_symptom_offset:
           type: string
           format: date
+    RecordResponseBody:
+      description: successful response with one record
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponseBody"
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: "#/components/schemas/Record"
     RecordArray:
       type: array
       items:
         $ref: "#/components/schemas/Record"
+    RecordArrayResponseBody:
+      description: successful response with record array
+      allOf:
+        - $ref: "#/components/schemas/SuccessResponseBody"
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: "#/components/schemas/RecordArray"
     Error:
       type: object
       required:
