@@ -69,12 +69,13 @@ def populate_test_db():
     patient_2.medicals.append(med_1)
     patient_3.medicals.append(med_2)
 
-    record = Record(
+    record_1 = Record(
         title="Flew",
         description="influenca season",
         date_diagnosis=datetime.datetime.strptime("2022-12-01", "%Y-%m-%d"),
         date_symptom_onset=datetime.datetime.strptime("2022-11-21", "%Y-%m-%d"),
         patient_id=patient_1.id,
     )
-    db.session.add(record)
+    db.session.add(record_1)
+    patient_3.records.append(record_1)
     db.session.commit()
