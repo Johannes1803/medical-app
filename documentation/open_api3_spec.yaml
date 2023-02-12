@@ -96,10 +96,11 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/MedicId"
-      - $ref: '#/components/parameters/offsetParam'
-      - $ref: '#/components/parameters/limitParam'
     get:
       summary: Get all patients of one medic
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
       responses:
         "200":
           description: Array of patients of one medic, paginated
@@ -178,17 +179,11 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/MedicId"
-      - $ref: '#/components/parameters/offsetParam'
-      - $ref: '#/components/parameters/limitParam'
     get:
       summary: Get all records of one patient
       parameters:
-        - in: query
-          name: page
-          required: false
-          schema:
-            type: integer
-          description: The page number in the results
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
       responses:
         "200":
           description: Records of patient
