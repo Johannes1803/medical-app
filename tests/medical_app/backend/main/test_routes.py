@@ -292,3 +292,26 @@ def test_delete_patient_non_existing_should_return_404(app) -> None:
 
     assert_error_response_structure(res)
     assert res.status_code == 404
+
+
+def test_get_records_of_patients_should_return_records(app) -> None:
+    """Test trying to delete a non existing patient raises 404.
+
+    :param app: flask app instance
+    """
+    res: flask.Response = app.test_client().get("/patients/5/records")
+
+    assert_success_response_structure(res)
+
+    assert len(res.json["data"]) > 0
+
+
+def test_get_records_of_patients_non_existing_should_raise_404(app) -> None:
+    """Test trying to delete a non existing patient raises 404.
+
+    :param app: flask app instance
+    """
+    res: flask.Response = app.test_client().get("/patients/2/records")
+
+    assert_error_response_structure(res)
+    assert res.status_code == 404
