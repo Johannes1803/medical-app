@@ -31,7 +31,7 @@ def test_get_medics_should_return_medics_array(app):
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().get("/medics")
+    res: flask.Response = app.test_client().get("/medics?limit=2&offset=1")
 
     assert_success_response_structure(res)
 
@@ -158,7 +158,7 @@ def test_get_patients_of_medic(app) -> None:
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().get("/medics/2/patients")
+    res: flask.Response = app.test_client().get("/medics/2/patients?limit=100")
 
     assert_success_response_structure(res)
 
