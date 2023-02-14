@@ -11,7 +11,7 @@ from medical_app.backend import db
 def prune_keys_with_none_value(input_dict: dict) -> dict:
     """Remove keys if value is None
 
-    :param input_dict: dict with potential none valuse
+    :param input_dict: dict with potential none values
     :return: pruned dict
     """
     return {k: v for k, v in input_dict.items() if v is not None}
@@ -52,7 +52,7 @@ class User(db.Model):
             return instance_dict_to_be_jsonified
 
     def delete(self) -> int:
-        """Delete user from db
+        """Delete user from db.
 
         :return: id of deleted user
         """
@@ -156,5 +156,22 @@ class Record(db.Model):
             "date_diagnosis": self.date_diagnosis,
             "date_symptom_onset": self.date_symptom_onset,
             "date_symptom_offest": self.date_symptom_offset,
+            "patient_id": self.patient_id,
         }
         return prune_keys_with_none_value(format_dict)
+
+    def insert(self) -> Dict[str, Any]:
+        """Insert record into db.
+
+        :return: dict representation of record.
+        """
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except SQLAlchemyError:
+            # ToDo: log error
+            db.session.rollback()
+        finally:
+            instance_dict_to_be_jsonified = self.format_for_json()
+            db.session.close()
+            return instance_dict_to_be_jsonified
