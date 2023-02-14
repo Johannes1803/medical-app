@@ -1,6 +1,6 @@
 import flask
 
-from medical_app.backend.models import Medical, Patient
+from medical_app.backend.models import Medical, Patient, Record
 
 
 def assert_success_response_structure(res, expected_status_code: int = 200) -> None:
@@ -295,7 +295,7 @@ def test_delete_patient_non_existing_should_return_404(app) -> None:
 
 
 def test_get_records_of_patients_should_return_records(app) -> None:
-    """Test trying to delete a non existing patient raises 404.
+    """Test getting records of a patient returns a list of records.
 
     :param app: flask app instance
     """
@@ -307,7 +307,7 @@ def test_get_records_of_patients_should_return_records(app) -> None:
 
 
 def test_get_records_of_patients_non_existing_should_raise_404(app) -> None:
-    """Test trying to delete a non existing patient raises 404.
+    """Test trying to get records of a non-existent patient raises 404.
 
     :param app: flask app instance
     """
@@ -315,3 +315,33 @@ def test_get_records_of_patients_non_existing_should_raise_404(app) -> None:
 
     assert_error_response_structure(res)
     assert res.status_code == 404
+
+
+def test_post_new_record_should_add_record_to_patient(app) -> None:
+    """Test posting a new record to patient creates record in db.
+
+    :param app: flask app instance
+    """
+    # create new record
+    patient_id = 5
+    res = app.test_client().post(
+        f"/patients/{patient_id}/records",
+        json={
+            "title": "back pain",
+            "description": "Caused by long working hours.",
+            # "symptoms": ["string"],
+            "dateDiagnosis": "2023-02-14",
+            "dateSymptomOnset": "2023-02-07",
+            "patientId": patient_id,
+        },
+    )
+
+    # test response boilerplate
+    assert_success_response_structure(res, expected_status_code=201)
+
+    # assert the id of the newly created medic is returned
+    new_record_id = res.json["data"].get("id")
+    assert new_record_id
+
+    # check new medic is in db
+    assert Record.query.get(new_record_id)
