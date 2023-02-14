@@ -1,10 +1,11 @@
-from typing import List, Tuple
+from datetime import datetime
+from typing import List, Optional, Tuple
 
 from flask import Response, abort, current_app, jsonify, request
 
 from medical_app.backend.main import bp
 from medical_app.backend.main.api_helper_functions import paginate
-from medical_app.backend.models import Medical, Patient
+from medical_app.backend.models import Medical, Patient, Record
 
 
 @bp.route("/medics", methods=["GET"])
@@ -137,7 +138,7 @@ def delete_patient(patient_id) -> Response:
 
 
 @bp.route("/patients/<int:patient_id>/records", methods=["GET"])
-def get_records_of_one_patient(patient_id):
+def get_records_of_one_patient(patient_id: int) -> Response:
     offset = request.args.get("offset", 0, type=int)
     limit = request.args.get("limit", 10, type=int)
 
@@ -155,3 +156,41 @@ def get_records_of_one_patient(patient_id):
                 ),
             }
         )
+
+
+@bp.route("/patients/<int:patient_id>/records", methods=["POST"])
+def add_record_to_patient(patient_id: int) -> Tuple[Response, int]:
+    date_format = "%Y-%m-%d"
+
+    patient: Optional[Patient] = Patient.query.get(patient_id)
+    if not patient:
+        abort(404)
+    else:
+        try:
+            # process request body
+            date_symptom_offset_str: str = request.json.get("dateSymptomOffset")
+            date_symptom_offset: Optional[datetime] = (
+                datetime.strptime(date_symptom_offset_str, date_format)
+                if date_symptom_offset_str
+                else None
+            )
+            date_symptom_onset: datetime = datetime.strptime(
+                request.json["dateSymptomOnset"], date_format
+            )
+            date_diagnosis: datetime = datetime.strptime(
+                request.json["dateDiagnosis"], date_format
+            )
+            record = Record(
+                title=request.json["title"],
+                description=request.json["description"],
+                date_diagnosis=date_diagnosis,
+                date_symptom_onset=date_symptom_onset,
+                date_symptom_offset=date_symptom_offset,
+                patient_id=request.json["patientId"],
+            )
+        except KeyError:
+            # ToDo: logging in blue prints
+            abort(422)
+        else:
+            record_dict = record.insert()
+            return jsonify({"status": "success", "data": record_dict}), 201
