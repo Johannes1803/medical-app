@@ -12,8 +12,8 @@ paths:
     get:
       summary: Get all medics
       parameters:
-        - $ref: '#/components/parameters/offsetParam'
-        - $ref: '#/components/parameters/limitParam'
+        - $ref: "#/components/parameters/offsetParam"
+        - $ref: "#/components/parameters/limitParam"
       responses:
         "200":
           description: Array of medics, paginated
@@ -99,8 +99,8 @@ paths:
     get:
       summary: Get all patients of one medic
       parameters:
-        - $ref: '#/components/parameters/offsetParam'
-        - $ref: '#/components/parameters/limitParam'
+        - $ref: "#/components/parameters/offsetParam"
+        - $ref: "#/components/parameters/limitParam"
       responses:
         "200":
           description: Array of patients of one medic, paginated
@@ -182,8 +182,8 @@ paths:
     get:
       summary: Get all records of one patient
       parameters:
-        - $ref: '#/components/parameters/offsetParam'
-        - $ref: '#/components/parameters/limitParam'
+        - $ref: "#/components/parameters/offsetParam"
+        - $ref: "#/components/parameters/limitParam"
       responses:
         "200":
           description: Records of patient
