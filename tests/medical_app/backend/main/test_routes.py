@@ -123,18 +123,19 @@ def test_delete_medic_should_remove_medic_from_db(app):
     :param app: flask app instance
     """
     # get patient ids associated with medic before deletion
-    medic = Medical.query.get(1)
+    medic_id: int = 1
+    medic = Medical.query.get(medic_id)
     patient_ids = [patient.id for patient in medic.patients]
 
-    res: flask.Response = app.test_client().delete("/medics/1")
+    res: flask.Response = app.test_client().delete(f"/medics/{medic_id}")
 
     assert_success_response_structure(res)
 
     # assert medic is no longer in db
-    assert Medical.query.get(1) is None
+    assert Medical.query.get(medic_id) is None
 
     # test response contains medic id
-    assert res.json["data"] == 1
+    assert res.json["data"] == medic_id
 
     # test no former patient still has medic in his list of medics
     patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()
@@ -370,6 +371,44 @@ def test_get_non_existing_record_should_return_404(app) -> None:
     patient_id = 5
     record_id = 10
     res = app.test_client().get(
+        f"/patients/{patient_id}/records/{record_id}",
+    )
+    assert_error_response_structure(res)
+
+    assert res.json["code"] == 404
+
+
+def test_delete_record_removes_record_from_db(app) -> None:
+    """Test deleting a record removes it from the db.
+
+    :param app: flask app instance
+    """
+    patient_id = 5
+    record_id = 1
+
+    # assert record is in db
+    assert Record.query.get(record_id)
+    res = app.test_client().delete(
+        f"/patients/{patient_id}/records/{record_id}",
+    )
+
+    assert_success_response_structure(res)
+
+    # assert recod is no longer in db
+    assert Record.query.get(record_id) is None
+
+    # test response contains record id
+    assert res.json["data"] == record_id
+
+
+def test_delete_non_existing_record_should_return_404(app) -> None:
+    """Test getting a non existing record raises 404.
+
+    :param app: flask app instance
+    """
+    patient_id = 20
+    record_id = 10
+    res = app.test_client().delete(
         f"/patients/{patient_id}/records/{record_id}",
     )
     assert_error_response_structure(res)
