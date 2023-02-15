@@ -345,3 +345,33 @@ def test_post_new_record_should_add_record_to_patient(app) -> None:
 
     # check new medic is in db
     assert Record.query.get(new_record_id)
+
+
+def test_get_record_should_return_record(app) -> None:
+    """Test getting a record returns a record.
+
+    :param app: flask app instance
+    """
+    patient_id = 5
+    record_id = 1
+    res = app.test_client().get(
+        f"/patients/{patient_id}/records/{record_id}",
+    )
+    assert_success_response_structure(res)
+
+    assert len(res.json["data"]) > 0
+
+
+def test_get_non_existing_record_should_return_404(app) -> None:
+    """Test getting a non existing record raises 404.
+
+    :param app: flask app instance
+    """
+    patient_id = 5
+    record_id = 10
+    res = app.test_client().get(
+        f"/patients/{patient_id}/records/{record_id}",
+    )
+    assert_error_response_structure(res)
+
+    assert res.json["code"] == 404
