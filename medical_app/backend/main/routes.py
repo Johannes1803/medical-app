@@ -127,8 +127,7 @@ def delete_patient(patient_id) -> Response:
     if not patient:
         abort(404)
     else:
-        patient_id = patient.id
-        patient.delete()
+        patient_id = patient.delete()
         return jsonify(
             {
                 "status": "success",
@@ -218,3 +217,28 @@ def get_record(patient_id: int, record_id: int):
             record = matching_records[0]
             record_dict = record.format_for_json()
             return jsonify({"status": "success", "data": record_dict})
+
+
+@bp.route("/patients/<int:patient_id>/records/<int:record_id>", methods=["DELETE"])
+def delete_record(patient_id: int, record_id: int) -> Response:
+    """Delete record from db.
+
+    :param patient_id: id of patient
+    :param record_id: id of record
+    :return: flask response
+    """
+    patient: Optional[Patient] = Patient.query.get(patient_id)
+    if not patient:
+        abort(404)
+    else:
+        matching_records: list[Record] = [
+            record for record in patient.records if record.id == record_id
+        ]
+        if len(matching_records) == 0:
+            abort(404)
+        elif len(matching_records) > 1:
+            abort(500)
+        else:
+            record: Record = matching_records[0]
+            record_id = record.delete()
+            return jsonify({"status": "success", "data": record_id})
