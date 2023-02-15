@@ -46,25 +46,28 @@ class User(db.Model):
         except SQLAlchemyError:
             # ToDo: log error
             db.session.rollback()
-        finally:
+        else:
             instance_dict_to_be_jsonified = self.format_for_json()
-            db.session.close()
             return instance_dict_to_be_jsonified
+        finally:
+            db.session.close()
 
     def delete(self) -> int:
-        """Delete user from db.
+        """Delete self from db.
 
         :return: id of deleted user
         """
+        id = self.id
         try:
-            user_id = db.session.delete(self)
+            db.session.delete(self)
             db.session.commit()
         except SQLAlchemyError:
             # ToDo: log error
             db.session.rollback()
+        else:
+            return id
         finally:
             db.session.close()
-            return user_id
 
 
 association_table = db.Table(
@@ -80,7 +83,9 @@ class Patient(User):
     medicals: Mapped[List[Medical]] = db.relationship(
         secondary=association_table, back_populates="patients"
     )
-    records: Mapped[List[Record]] = db.relationship()
+    records: Mapped[List[Record]] = db.relationship(
+        "Record", cascade="all, delete-orphan"
+    )
 
     __mapper_args__ = {
         "polymorphic_identity": "patient",
@@ -171,7 +176,25 @@ class Record(db.Model):
         except SQLAlchemyError:
             # ToDo: log error
             db.session.rollback()
-        finally:
+        else:
             instance_dict_to_be_jsonified = self.format_for_json()
-            db.session.close()
             return instance_dict_to_be_jsonified
+        finally:
+            db.session.close()
+
+    def delete(self) -> int:
+        """Delete self from db.
+
+        :return: id of deleted user
+        """
+        id = self.id
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except SQLAlchemyError:
+            # ToDo: log error
+            db.session.rollback()
+        else:
+            return id
+        finally:
+            db.session.close()
