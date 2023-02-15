@@ -194,3 +194,27 @@ def add_record_to_patient(patient_id: int) -> Tuple[Response, int]:
         else:
             record_dict = record.insert()
             return jsonify({"status": "success", "data": record_dict}), 201
+
+
+@bp.route("/patients/<int:patient_id>/records/<int:record_id>", methods=["GET"])
+def get_record(patient_id: int, record_id: int):
+    """Get record of specific patient.
+
+    :param patient_id: id of patient
+    :param record_id: id of record
+    """
+    patient: Optional[Patient] = Patient.query.get(patient_id)
+    if not patient:
+        abort(404)
+    else:
+        matching_records: list[Record] = [
+            record for record in patient.records if record.id == record_id
+        ]
+        if len(matching_records) == 0:
+            abort(404)
+        elif len(matching_records) > 1:
+            abort(500)
+        else:
+            record = matching_records[0]
+            record_dict = record.format_for_json()
+            return jsonify({"status": "success", "data": record_dict})
