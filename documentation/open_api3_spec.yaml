@@ -308,6 +308,10 @@ components:
       type: integer
       minimum: 1
       maximum: 2147483647
+    PatientIdArray:
+      type: array
+      items:
+        $ref: "#/components/schemas/PatientId"
     PatientIdResponseBody:
       description: successful response with id of medic
       allOf:
@@ -322,6 +326,7 @@ components:
       description: Model of a patient
       type: object
       required:
+        - id
         - firstName
         - lastName
         - email
@@ -341,7 +346,13 @@ components:
         records:
           $ref: "#/components/schemas/RecordArray"
         medics:
-          $ref: "#/components/schemas/MedicArray"
+          allOf:
+            - $ref: "#/components/schemas/MedicArray"
+            - readOnly: true
+        medicIds:
+          allOf:
+            - $ref: "#/components/schemas/MedicIdArray"
+            - writeOnly: true
     PatientResponseBody:
       allOf:
         - $ref: "#/components/schemas/SuccessResponseBody"
@@ -369,6 +380,10 @@ components:
       type: integer
       minimum: 1
       maximum: 2147483647
+    MedicIdArray:
+      type: array
+      items:
+        $ref: "#/components/schemas/MedicId"
     MedicIdResponseBody:
       description: successful response with array of medics
       allOf:
@@ -383,9 +398,11 @@ components:
       description: Model of a medical professional
       type: object
       required:
+        - id
         - firstName
         - lastName
         - email
+        - patients
       properties:
         id:
           allOf:
@@ -398,7 +415,13 @@ components:
         email:
           type: string
         patients:
-          $ref: "#/components/schemas/PatientArray"
+          allOf:
+            - $ref: "#/components/schemas/PatientArray"
+            - readOnly: true
+        patientIds:
+          allOf:
+            - $ref: "#/components/schemas/PatientIdArray"
+            - writeOnly: true
     MedicResponseBody:
       description: successful response with medic
       allOf:
@@ -443,6 +466,7 @@ components:
       description: Model of a medical record
       type: object
       required:
+        - id
         - title
         - description
         - symptoms
