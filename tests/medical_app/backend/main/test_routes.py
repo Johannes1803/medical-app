@@ -185,6 +185,27 @@ def test_get_patients_of_medic_non_existing_should_return_404(app) -> None:
     assert res.status_code == 404
 
 
+def test_add_patient_to_medic(app) -> None:
+    """Test adding patient to medic updates medic patient mapping.
+
+    :param app: flask app instance
+    """
+    medic_id = 1
+    patient_id = 3
+    res: flask.Response = app.test_client().put(
+        f"/medics/{medic_id}/patients/{patient_id}"
+    )
+    assert_success_response_structure(res)
+
+    # test medic is added to patient
+    patient = Patient.query.get(patient_id)
+    assert [medic for medic in patient.medicals if medic.id == medic_id]
+
+    # test patient is added to medic
+    medic = Medical.query.get(medic_id)
+    assert [patient for patient in medic.patients if patient.id == patient_id]
+
+
 def test_get_patient_should_return_patient(app):
     """Test get patient returns patient.
 
