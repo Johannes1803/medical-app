@@ -305,7 +305,9 @@ components:
           type: object
     PatientId:
       description: The unique identifier of a patient
-      type: string
+      type: integer
+      minimum: 1
+      maximum: 2147483647
     PatientIdResponseBody:
       description: successful response with id of medic
       allOf:
@@ -365,6 +367,8 @@ components:
     MedicId:
       description: The unique identifier of a medical professional
       type: integer
+      minimum: 1
+      maximum: 2147483647
     MedicIdResponseBody:
       description: successful response with array of medics
       allOf:
@@ -408,8 +412,6 @@ components:
     MedicArray:
       description: array of medics
       type: array
-      minItems: 0
-      maxItems: 10
       items:
         $ref: "#/components/schemas/Medic"
     MedicArrayResponseBody:
@@ -424,7 +426,9 @@ components:
               $ref: "#/components/schemas/MedicArray"
     RecordId:
       description: The unique identifier of a medical record
-      type: string
+      type: integer
+      minimum: 1
+      maximum: 2147483647
     RecordIdResponseBody:
       description: successful response with one record
       allOf:
