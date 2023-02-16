@@ -138,6 +138,24 @@ class Medical(User):
             format_dict["patients"] = [patient.id for patient in self.patients]
         return prune_keys_with_none_value(format_dict)
 
+    def add_patient(self, patient: Patient) -> Dict[str, Any]:
+        """Add patient to medic.
+
+        :param patient_id: id of patient to add
+        :return: dict represenation of self to be jsonified
+        """
+        try:
+            self.patients.append(patient)
+            db.session.commit()
+        except SQLAlchemyError:
+            # ToDo: log error
+            db.session.rollback()
+        else:
+            instance_dict_to_be_jsonified = self.format_for_json()
+            return instance_dict_to_be_jsonified
+        finally:
+            db.session.close()
+
 
 class Record(db.Model):
     id = db.Column(db.Integer, primary_key=True)
