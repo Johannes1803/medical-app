@@ -104,6 +104,17 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
         )
 
 
+@bp.route("/medics/<int:medic_id>/patients/<int:patient_id>", methods=["PUT"])
+def link_patient_to_medic(medic_id: int, patient_id: int) -> Response:
+    medic: Medical = Medical.query.get(medic_id)
+    patient: Patient = Patient.query.get(patient_id)
+    if not medic and patient:
+        abort(404)
+    else:
+        medic_dict = medic.add_patient(patient)
+        return jsonify({"status": "success", "data": medic_dict})
+
+
 @bp.route("/patients", methods=["POST"])
 def create_new_patient() -> Tuple[Response, int]:
     medic_ids: List[int] = request.json.get("medicIds", [])
