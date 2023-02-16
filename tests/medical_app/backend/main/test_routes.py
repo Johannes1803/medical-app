@@ -1,4 +1,5 @@
 from typing import Optional
+
 import flask
 
 from medical_app.backend.models import Medical, Patient, Record
@@ -210,30 +211,33 @@ def test_post_patient_should_create_new_patient(app):
 
     :param app: flask app instance
     """
-    # count medics before creating a new one
+    # count patients before creating a new one
     patients = Patient.query.all()
     n_patients_before = len(patients)
 
-    # create new medic
+    # create new patient
     res = app.test_client().post(
         "/patients",
         json={
             "firstName": "Anna",
             "lastName": "Patient",
             "email": "anna.patient@gmail.com",
-            "medicals": [],
+            "medicIds": [2],
         },
     )
 
     # test response boilerplate
     assert_success_response_structure(res, expected_status_code=201)
 
-    # assert the id of the newly created medic is returned
+    # assert the id of the newly created patient is returned
     new_patient_id = res.json["data"].get("id")
     assert new_patient_id
 
-    # check new medic is in db
-    assert Patient.query.get(new_patient_id)
+    # check new patient is in db
+    new_patient = Patient.query.get(new_patient_id)
+
+    # check new patient has medical added
+    assert new_patient.medicals[0].email
 
     # check medics count increased by one
     patients = Patient.query.all()
