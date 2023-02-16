@@ -105,19 +105,27 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
 
 
 @bp.route("/patients", methods=["POST"])
-def create() -> Tuple[Response, int]:
+def create_new_patient() -> Tuple[Response, int]:
+    medic_ids: List[int] = request.json.get("medicIds", [])
+    medics = []
     with current_app.app_context():
+        for medic_id in medic_ids:
+            medic = Medical.query.get(medic_id)
+            if not medic:
+                abort(422)
+            else:
+                medics.append(medic)
         try:
-            patient = Patient(
+            medic = Patient(
                 first_name=request.json["firstName"],
                 last_name=request.json["lastName"],
                 email=request.json["email"],
-                medicals=request.json["medicals"],
+                medicals=medics,
             )
         except KeyError:
             abort(422)
         else:
-            patient_dict = patient.insert()
+            patient_dict = medic.insert()
             return jsonify({"status": "success", "data": patient_dict}), 201
 
 
