@@ -1,3 +1,4 @@
+from typing import Optional
 import flask
 
 from medical_app.backend.models import Medical, Patient, Record
@@ -54,7 +55,7 @@ def test_post_medic_should_create_new_medic(app):
             "firstName": "Marc",
             "lastName": "Tester",
             "email": "marc.tester@gmail.com",
-            "patients": [],
+            "patient_ids": [3, 4],
         },
     )
 
@@ -66,7 +67,12 @@ def test_post_medic_should_create_new_medic(app):
     assert new_medic_id
 
     # check new medic is in db
-    assert Medical.query.get(new_medic_id)
+    new_medic: Optional[Medical] = Medical.query.get(new_medic_id)
+    assert new_medic
+
+    # check new medic has patients
+    assert new_medic.patients
+    assert new_medic.patients[0].first_name
 
     # check medics count increased by one
     medics = Medical.query.all()
