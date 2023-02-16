@@ -28,13 +28,22 @@ def get_medics() -> Response:
 
 @bp.route("/medics", methods=["POST"])
 def create_new_medic() -> Tuple[Response, int]:
+    patient_ids: List[int] = request.json.get("patient_ids", [])
+    patients = []
     with current_app.app_context():
+        for patient_id in patient_ids:
+            patient = Patient.query.get(patient_id)
+            if not patient:
+                abort(422)
+            else:
+                patients.append(patient)
+
         try:
             medic = Medical(
                 first_name=request.json["firstName"],
                 last_name=request.json["lastName"],
                 email=request.json["email"],
-                patients=request.json["patients"],
+                patients=patients,
             )
         except KeyError:
             abort(422)
