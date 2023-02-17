@@ -2,7 +2,7 @@ from typing import Optional
 
 import flask
 
-from medical_app.backend.models import Medical, Patient, Record
+from medical_app.backend.models import db, Medical, Patient, Record
 
 
 def assert_success_response_structure(res, expected_status_code: int = 200) -> None:
@@ -68,7 +68,7 @@ def test_post_medic_should_create_new_medic(app):
     assert new_medic_id
 
     # check new medic is in db
-    new_medic: Optional[Medical] = Medical.query.get(new_medic_id)
+    new_medic: Optional[Medical] = db.session.get(Medical, new_medic_id)
     assert new_medic
 
     # check new medic has patients
@@ -146,7 +146,7 @@ def test_delete_medic_should_remove_medic_from_db(app):
     """
     # get patient ids associated with medic before deletion
     medic_id: int = 1
-    medic = Medical.query.get(medic_id)
+    medic = db.session.get(Medical, medic_id)
     patient_ids = [patient.id for patient in medic.patients]
 
     res: flask.Response = app.test_client().delete(f"/medics/{medic_id}")
@@ -154,7 +154,7 @@ def test_delete_medic_should_remove_medic_from_db(app):
     assert_success_response_structure(res)
 
     # assert medic is no longer in db
-    assert Medical.query.get(medic_id) is None
+    assert db.session.get(Medical, medic_id) is None
 
     # test response contains medic id
     assert res.json["data"] == medic_id
@@ -213,11 +213,11 @@ def test_add_patient_to_medic(app) -> None:
     assert_success_response_structure(res)
 
     # test medic is added to patient
-    patient = Patient.query.get(patient_id)
+    patient = db.session.get(Patient, patient_id)
     assert [medic for medic in patient.medicals if medic.id == medic_id]
 
     # test patient is added to medic
-    medic = Medical.query.get(medic_id)
+    medic = db.session.get(Medical, medic_id)
     assert [patient for patient in medic.patients if patient.id == patient_id]
 
 
@@ -270,7 +270,7 @@ def test_post_patient_should_create_new_patient(app):
     assert new_patient_id
 
     # check new patient is in db
-    new_patient = Patient.query.get(new_patient_id)
+    new_patient = db.session.get(Patient, new_patient_id)
 
     # check new patient has medical added
     assert new_patient.medicals[0].email
@@ -310,7 +310,7 @@ def test_delete_patient_should_remove_patient_from_db(app):
     patient_id = 5
 
     # get patient ids associated with medic before deletion
-    patient = Patient.query.get(patient_id)
+    patient = db.session.get(Patient, patient_id)
     assert patient
     medic_ids = [medic.id for medic in patient.medicals]
 
@@ -319,7 +319,7 @@ def test_delete_patient_should_remove_patient_from_db(app):
     assert_success_response_structure(res)
 
     # verify patient was deleted
-    assert Patient.query.get(patient_id) is None
+    assert db.session.get(Patient, patient_id) is None
 
     # test response contains patient id
     assert res.json["data"] == patient_id
@@ -391,7 +391,7 @@ def test_post_new_record_should_add_record_to_patient(app) -> None:
     assert new_record_id
 
     # check new medic is in db
-    assert Record.query.get(new_record_id)
+    assert db.session.get(Record, new_record_id)
 
 
 def test_get_record_should_return_record(app) -> None:
@@ -433,7 +433,7 @@ def test_delete_record_removes_record_from_db(app) -> None:
     record_id = 1
 
     # assert record is in db
-    assert Record.query.get(record_id)
+    assert db.session.get(Record, record_id)
     res = app.test_client().delete(
         f"/patients/{patient_id}/records/{record_id}",
     )
@@ -441,7 +441,7 @@ def test_delete_record_removes_record_from_db(app) -> None:
     assert_success_response_structure(res)
 
     # assert recod is no longer in db
-    assert Record.query.get(record_id) is None
+    assert db.session.get(Record, record_id) is None
 
     # test response contains record id
     assert res.json["data"] == record_id

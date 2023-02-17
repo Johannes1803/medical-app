@@ -3,6 +3,7 @@ from typing import List, Optional, Tuple
 
 from flask import Response, abort, current_app, jsonify, request
 
+from medical_app.backend import db
 from medical_app.backend.main import bp
 from medical_app.backend.main.api_helper_functions import paginate
 from medical_app.backend.models import Medical, Patient, Record
@@ -32,7 +33,7 @@ def create_new_medic() -> Tuple[Response, int]:
     patients = []
     with current_app.app_context():
         for patient_id in patient_ids:
-            patient = Patient.query.get(patient_id)
+            patient = db.session.get(Patient, patient_id)
             if not patient:
                 abort(422)
             else:
@@ -54,7 +55,7 @@ def create_new_medic() -> Tuple[Response, int]:
 
 @bp.route("/medics/<int:medic_id>", methods=["GET"])
 def get_medic(medic_id) -> Response:
-    medic: Medical = Medical.query.get(medic_id)
+    medic: Medical = db.session.get(Medical, medic_id)
     if not medic:
         abort(404)
     else:
@@ -68,7 +69,7 @@ def get_medic(medic_id) -> Response:
 
 @bp.route("/medics/<int:medic_id>", methods=["DELETE"])
 def delete_medic(medic_id) -> Response:
-    medic: Medical = Medical.query.get(medic_id)
+    medic: Medical = db.session.get(Medical, medic_id)
     if not medic:
         abort(404)
     else:
@@ -87,7 +88,7 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
     offset = request.args.get("offset", 0, type=int)
     limit = request.args.get("limit", 10, type=int)
 
-    medic: Medical = Medical.query.get(medic_id)
+    medic: Medical = db.session.get(Medical, medic_id)
     if not medic:
         abort(404)
     else:
@@ -106,8 +107,8 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
 
 @bp.route("/medics/<int:medic_id>/patients/<int:patient_id>", methods=["PUT"])
 def link_patient_to_medic(medic_id: int, patient_id: int) -> Response:
-    medic: Medical = Medical.query.get(medic_id)
-    patient: Patient = Patient.query.get(patient_id)
+    medic: Medical = db.session.get(Medical, medic_id)
+    patient: Patient = db.session.get(Patient, patient_id)
     if not medic and patient:
         abort(404)
     else:
@@ -121,7 +122,7 @@ def create_new_patient() -> Tuple[Response, int]:
     medics = []
     with current_app.app_context():
         for medic_id in medic_ids:
-            medic = Medical.query.get(medic_id)
+            medic = db.session.get(Medical, medic_id)
             if not medic:
                 abort(422)
             else:
@@ -142,7 +143,7 @@ def create_new_patient() -> Tuple[Response, int]:
 
 @bp.route("/patients/<int:patient_id>", methods=["GET"])
 def get_patient(patient_id: int) -> Response:
-    patient: Patient = Patient.query.get(patient_id)
+    patient: Patient = db.session.get(Patient, patient_id)
     if not patient:
         abort(404)
     else:
@@ -151,7 +152,7 @@ def get_patient(patient_id: int) -> Response:
 
 @bp.route("/patients/<int:patient_id>", methods=["DELETE"])
 def delete_patient(patient_id) -> Response:
-    patient: Patient = Patient.query.get(patient_id)
+    patient: Patient = db.session.get(Patient, patient_id)
     if not patient:
         abort(404)
     else:
@@ -169,7 +170,7 @@ def get_records_of_one_patient(patient_id: int) -> Response:
     offset = request.args.get("offset", 0, type=int)
     limit = request.args.get("limit", 10, type=int)
 
-    patient: Patient = Patient.query.get(patient_id)
+    patient: Patient = db.session.get(Patient, patient_id)
     if not patient:
         abort(404)
     else:
@@ -189,7 +190,7 @@ def get_records_of_one_patient(patient_id: int) -> Response:
 def add_record_to_patient(patient_id: int) -> Tuple[Response, int]:
     date_format = "%Y-%m-%d"
 
-    patient: Optional[Patient] = Patient.query.get(patient_id)
+    patient: Optional[Patient] = db.session.get(Patient, patient_id)
     if not patient:
         abort(404)
     else:
@@ -230,7 +231,7 @@ def get_record(patient_id: int, record_id: int):
     :param patient_id: id of patient
     :param record_id: id of record
     """
-    patient: Optional[Patient] = Patient.query.get(patient_id)
+    patient: Optional[Patient] = db.session.get(Patient, patient_id)
     if not patient:
         abort(404)
     else:
@@ -255,7 +256,7 @@ def delete_record(patient_id: int, record_id: int) -> Response:
     :param record_id: id of record
     :return: flask response
     """
-    patient: Optional[Patient] = Patient.query.get(patient_id)
+    patient: Optional[Patient] = db.session.get(Patient, patient_id)
     if not patient:
         abort(404)
     else:
