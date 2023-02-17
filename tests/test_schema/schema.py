@@ -1,4 +1,5 @@
 import schemathesis
+
 from config import basedir
 
 schema = schemathesis.from_file(basedir / "documentation/open_api3_spec.yaml")
