@@ -2,7 +2,7 @@ from typing import Optional
 
 import flask
 
-from medical_app.backend.models import db, Medical, Patient, Record
+from medical_app.backend.models import Medical, Patient, Record, db
 
 
 def assert_success_response_structure(res, expected_status_code: int = 200) -> None:
