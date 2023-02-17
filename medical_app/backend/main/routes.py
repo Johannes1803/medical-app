@@ -2,10 +2,14 @@ from datetime import datetime
 from typing import List, Optional, Tuple
 
 from flask import Response, abort, current_app, jsonify, request
+from sqlalchemy.exc import SQLAlchemyError
 
 from medical_app.backend import db
+from medical_app.backend.api_helper_functions import (
+    convert_camel_case_to_underscore,
+    paginate,
+)
 from medical_app.backend.main import bp
-from medical_app.backend.main.api_helper_functions import paginate
 from medical_app.backend.models import Medical, Patient, Record
 
 
@@ -81,6 +85,34 @@ def delete_medic(medic_id) -> Response:
                 "data": medic_id,
             }
         )
+
+
+@bp.route("/medics/<int:medic_id>", methods=["PATCH"])
+def update_medic(medic_id: int) -> Response:
+    medic: Medical = db.session.get(Medical, medic_id)
+    if not medic:
+        abort(404)
+    else:
+        patch_kwargs = {
+            convert_camel_case_to_underscore(k): v for k, v in request.json.items()
+        }
+        patient_ids: List[int] = patch_kwargs.pop("patient_ids", [])
+        patients = []
+        for patient_id in patient_ids:
+            patient = db.session.get(Patient, patient_id)
+            if not patient:
+                abort(422)
+            else:
+                patients.append(patient)
+        patch_kwargs["patients"] = patients
+        try:
+            medic_dict = medic.update(**patch_kwargs)
+        except AttributeError:
+            abort(422)
+        except SQLAlchemyError:
+            abort(500)
+        else:
+            return jsonify({"status": "success", "data": medic_dict})
 
 
 @bp.route("/medics/<int:medic_id>/patients", methods=["GET"])
