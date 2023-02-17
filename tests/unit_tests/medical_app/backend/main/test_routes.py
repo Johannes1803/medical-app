@@ -176,6 +176,51 @@ def test_delete_medic_non_existing_should_return_404(app) -> None:
     assert res.status_code == 404
 
 
+def test_patch_medic_should_modify_medic(app) -> None:
+    """Test patching a medic updates his information in the db.
+
+    :param app: flask app instance
+    """
+    medic_id = 2
+    new_patient_ids = [4, 5, 6]
+
+    res: flask.Response = app.test_client().patch(
+        f"/medics/{medic_id}",
+        json={
+            "email": "newMail@mail.com",
+            "lastName": "JustMarried",
+            "patientIds": new_patient_ids,
+        },
+    )
+
+    assert_success_response_structure(res)
+
+    # test an unchanged attribute
+    assert res.json["data"]["firstName"] == "Carla"
+    # test a modified attribute
+    assert set(res.json["data"]["patients"]) == set(new_patient_ids)
+
+
+def test_patch_medic_non_existing_attribute_raises_422(app) -> None:
+    """Test patching a medic with attribute not defined in model raises 422.
+
+    :param app: flask app instance
+    """
+    medic_id = 1
+
+    res: flask.Response = app.test_client().patch(
+        f"/medics/{medic_id}",
+        json={
+            "email": "newMail@mail.com",
+            "lastName": "JustMarried",
+            "hobbies": "playing guitar",
+        },
+    )
+
+    assert_error_response_structure(res)
+    assert res.json["code"] == 422
+
+
 def test_get_patients_of_medic(app) -> None:
     """Test get patients of medic returns array of patients.
 
