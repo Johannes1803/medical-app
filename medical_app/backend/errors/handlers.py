@@ -4,7 +4,21 @@ from medical_app.backend.errors import bp
 
 
 @bp.app_errorhandler(404)
-def not_found(error):
+def resource_not_found(error):
+    return (
+        jsonify(
+            {
+                "status": "error",
+                "code": 404,
+                "message": "Resource not found",
+            }
+        ),
+        404,
+    )
+
+
+@bp.errorhandler(404)
+def route_invalid(error):
     return (
         jsonify(
             {
