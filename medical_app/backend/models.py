@@ -46,8 +46,8 @@ class User(db.Model):
         """
         return {
             "id": self.id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
+            "firstName": self.first_name,
+            "lastName": self.last_name,
             "email": self.email,
         }
 
@@ -164,6 +164,26 @@ class Medical(User):
         except SQLAlchemyError:
             # ToDo: log error
             db.session.rollback()
+        else:
+            instance_dict_to_be_jsonified = self.format_for_json()
+            return instance_dict_to_be_jsonified
+        finally:
+            db.session.close()
+
+    def update(self, **kwargs) -> Dict[str, Any]:
+        """Update medic with given kwargs.
+
+        :return: dict representation of updated medic.
+        """
+        try:
+            for attribute_name, v in kwargs.items():
+                getattr(self, attribute_name)
+                setattr(self, attribute_name, v)
+
+        except (SQLAlchemyError, AttributeError) as e:
+            # ToDo: log error
+            db.session.rollback()
+            raise (e)
         else:
             instance_dict_to_be_jsonified = self.format_for_json()
             return instance_dict_to_be_jsonified
