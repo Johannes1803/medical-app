@@ -221,6 +221,20 @@ def test_add_patient_to_medic(app) -> None:
     assert [patient for patient in medic.patients if patient.id == patient_id]
 
 
+def test_add_patient_to_medic_raises_404_if_patient_not_found(app) -> None:
+    """Test adding patient to medic raises 404 if patient not in db.
+
+    :param app: flask app instance
+    """
+    medic_id = 1
+    patient_id = 1
+    res: flask.Response = app.test_client().put(
+        f"/medics/{medic_id}/patients/{patient_id}"
+    )
+    assert_error_response_structure(res)
+    assert res.json["code"] == 404
+
+
 def test_get_patient_should_return_patient(app):
     """Test get patient returns patient.
 
