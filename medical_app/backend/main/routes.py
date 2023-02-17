@@ -109,7 +109,7 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
 def link_patient_to_medic(medic_id: int, patient_id: int) -> Response:
     medic: Medical = db.session.get(Medical, medic_id)
     patient: Patient = db.session.get(Patient, patient_id)
-    if not medic and patient:
+    if not (medic and patient):
         abort(404)
     else:
         medic_dict = medic.add_patient(patient)
