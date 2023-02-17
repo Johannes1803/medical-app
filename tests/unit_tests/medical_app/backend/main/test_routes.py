@@ -100,6 +100,21 @@ def test_post_medic_missing_attribute_should_raise_422(app):
     assert res.json["code"] == 422
 
 
+def test_post_medic_invalid_attribute_should_raise_422(app):
+    """Test post medic with missing attribute raises 422 error.
+
+    :param app: flask app instance
+    """
+    res = app.test_client().post(
+        "/medics",
+        json={"email": "", "firstName": "", "id": 1, "lastName": "", "patients": []},
+    )
+
+    assert_error_response_structure(res)
+
+    assert res.json["code"] == 422
+
+
 def test_get_medic_should_return_medic(app) -> None:
     """Test get medic returns medic.
 

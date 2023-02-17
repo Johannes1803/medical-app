@@ -45,7 +45,7 @@ def create_new_medic() -> Tuple[Response, int]:
                 email=request.json["email"],
                 patients=patients,
             )
-        except KeyError:
+        except (KeyError, ValueError):
             abort(422)
         else:
             medic_dict = medic.insert()
@@ -133,7 +133,7 @@ def create_new_patient() -> Tuple[Response, int]:
                 email=request.json["email"],
                 medicals=medics,
             )
-        except KeyError:
+        except (KeyError, ValueError):
             abort(422)
         else:
             patient_dict = medic.insert()
@@ -215,7 +215,7 @@ def add_record_to_patient(patient_id: int) -> Tuple[Response, int]:
                 date_symptom_offset=date_symptom_offset,
                 patient_id=request.json["patientId"],
             )
-        except KeyError:
+        except (KeyError, ValueError):
             # ToDo: logging in blue prints
             abort(422)
         else:

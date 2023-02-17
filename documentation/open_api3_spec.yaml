@@ -110,29 +110,29 @@ paths:
                 $ref: "#/components/schemas/PatientArrayResponseBody"
         default:
           $ref: "#/components/responses/default"
-  /medics/{medicId}/patients/{patientId}:
-    parameters:
-      - name: medicId
-        description: The unique identifier of a medic
-        in: path
-        required: true
-        schema:
-          $ref: "#/components/schemas/MedicId"
-      - name: patientId
-        description: The unique identifier of a patient
-        in: path
-        required: true
-        schema:
-          $ref: "#/components/schemas/PatientId"
-    put:
-      summary: link a patient with a medic
-      responses:
-        "200":
-          description: Success response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MedicResponseBody"
+  # /medics/{medicId}/patients/{patientId}:
+  #   parameters:
+  #     - name: medicId
+  #       description: The unique identifier of a medic
+  #       in: path
+  #       required: true
+  #       schema:
+  #         $ref: "#/components/schemas/MedicId"
+  #     - name: patientId
+  #       description: The unique identifier of a patient
+  #       in: path
+  #       required: true
+  #       schema:
+  #         $ref: "#/components/schemas/PatientId"
+  #   put:
+  #     summary: link a patient with a medic
+  #     responses:
+  #       "200":
+  #         description: Success response
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/MedicResponseBody"
   /patients:
     post:
       summary: Create a new patient
@@ -325,7 +325,9 @@ components:
         status:
           type: string
         data:
-          type: object
+          oneOf:
+            - type: object
+            - type: array
     PatientId:
       description: The unique identifier of a patient
       type: integer

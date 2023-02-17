@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from medical_app.backend import db
 
@@ -18,10 +19,14 @@ def prune_keys_with_none_value(input_dict: dict) -> dict:
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64), nullable=False)
-    last_name = db.Column(db.String(64), nullable=False)
-    email = db.Column(db.String(64), unique=True, nullable=False)
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(64), nullable=False)
+    last_name = Column(String(64), nullable=False)
+    email = Column(String(64), unique=True, nullable=False)
+
+    def __new__(self, **kwargs):
+        if not (self.first_name and self.last_name and self.email):
+            raise ValueError("Required fields cannot be falsy")
 
     def format_for_json(self, **kwargs) -> Dict[str, Any]:
         """Return dict representation of user.
@@ -72,20 +77,18 @@ class User(db.Model):
 
 association_table = db.Table(
     "association_table",
-    db.Column("patient_id", db.ForeignKey("patient.id"), primary_key=True),
-    db.Column("medical_id", db.ForeignKey("medical.id"), primary_key=True),
+    Column("patient_id", ForeignKey("patient.id"), primary_key=True),
+    Column("medical_id", ForeignKey("medical.id"), primary_key=True),
 )
 
 
 class Patient(User):
     __tablename__ = "patient"
-    id: Mapped[int] = mapped_column(db.ForeignKey("user.id"), primary_key=True)
-    medicals: Mapped[List[Medical]] = db.relationship(
+    id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
+    medicals: Mapped[List[Medical]] = relationship(
         secondary=association_table, back_populates="patients"
     )
-    records: Mapped[List[Record]] = db.relationship(
-        "Record", cascade="all, delete-orphan"
-    )
+    records: Mapped[List[Record]] = relationship("Record", cascade="all, delete-orphan")
 
     __mapper_args__ = {
         "polymorphic_identity": "patient",
@@ -113,8 +116,8 @@ class Patient(User):
 
 class Medical(User):
     __tablename__ = "medical"
-    id: Mapped[int] = mapped_column(db.ForeignKey("user.id"), primary_key=True)
-    patients: db.Mapped[List[Patient]] = db.relationship(
+    id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
+    patients: Mapped[List[Patient]] = relationship(
         secondary=association_table, back_populates="medicals"
     )
 
@@ -158,14 +161,14 @@ class Medical(User):
 
 
 class Record(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
-    description = db.Column(db.String, nullable=False)
-    # symptoms = db.Column(db.ARRAY(db.String))
-    date_diagnosis = db.Column(db.DateTime, nullable=False)
-    date_symptom_onset = db.Column(db.DateTime, nullable=False)
-    date_symptom_offset = db.Column(db.DateTime, nullable=True)
-    patient_id: Mapped[int] = mapped_column(db.ForeignKey("patient.id"))
+    id = Column(Integer, primary_key=True)
+    title = Column(String(64), nullable=False)
+    description = Column(String, nullable=False)
+    # symptoms = Column(ARRAY(String))
+    date_diagnosis = Column(DateTime, nullable=False)
+    date_symptom_onset = Column(DateTime, nullable=False)
+    date_symptom_offset = Column(DateTime, nullable=True)
+    patient_id: Mapped[int] = mapped_column(ForeignKey("patient.id"))
 
     def format_for_json(self) -> Dict[str, Any]:
         """Return dict that can easily be jsonified.
