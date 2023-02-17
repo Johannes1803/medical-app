@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Set
 
-from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Table
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -19,14 +19,25 @@ def prune_keys_with_none_value(input_dict: dict) -> dict:
 
 
 class User(db.Model):
+    empty_string_forbidden_cols: Set = {"first_name", "last_name", "email"}
     id = Column(Integer, primary_key=True)
     first_name = Column(String(64), nullable=False)
     last_name = Column(String(64), nullable=False)
     email = Column(String(64), unique=True, nullable=False)
 
-    def __new__(self, **kwargs):
-        if not (self.first_name and self.last_name and self.email):
-            raise ValueError("Required fields cannot be falsy")
+    def __init__(self, **kwargs) -> None:
+        empty_string_params = {
+            arg_key
+            for arg_key, arg_value in kwargs.items()
+            if isinstance(arg_value, str) and len(arg_value) == 0
+        }
+        if empty_string_violations := (
+            empty_string_params & self.empty_string_forbidden_cols
+        ):
+            raise ValueError(
+                f"Empty string as value forbidden for {empty_string_violations}"
+            )
+        super().__init__(**kwargs)
 
     def format_for_json(self, **kwargs) -> Dict[str, Any]:
         """Return dict representation of user.
