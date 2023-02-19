@@ -10,6 +10,8 @@ Flask-Migrate = "*"
 python-dotenv = "*"
 pyyaml = "*"
 openapi3 = "*"
+python-jose = "*"
+Authlib = "*"
 
 [dev-packages]
 types-Flask = "*"
