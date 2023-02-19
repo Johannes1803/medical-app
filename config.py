@@ -7,5 +7,11 @@ load_dotenv(basedir / ".env")
 
 
 class Config(object):
+    # db
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + str(basedir / "medical_app.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # auth
+    AUTH0_DOMAIN = "https://medical-app.eu.auth0.com"
+    ALGORITHMS = ["RS256"]
+    API_AUDIENCE = "patients-medics-info-api"
