@@ -1,9 +1,10 @@
 import datetime
 import os
+
+import pytest
+import requests
 from dotenv import load_dotenv
 
-import requests
-import pytest
 from config import Config, basedir
 from medical_app.backend import create_app, db
 from medical_app.backend.models import Medical, Patient, Record
