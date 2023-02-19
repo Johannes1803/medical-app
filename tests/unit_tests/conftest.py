@@ -1,20 +1,57 @@
 import datetime
+import os
+from dotenv import load_dotenv
 
+import requests
 import pytest
-
-from config import Config
+from config import Config, basedir
 from medical_app.backend import create_app, db
 from medical_app.backend.models import Medical, Patient, Record
 
 
-class TestConfig(Config):
+class TestFlaskConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite://"
 
 
+class TestFlaskConfigAccessToken(TestFlaskConfig):
+    def __init__(self, client_id: str, client_secret: str) -> None:
+        self.client_id = client_id
+        self.client_secret = client_secret
+
+    def get_access_token(
+        self,
+    ):
+        url = self.AUTH0_DOMAIN + "/oauth/token"
+        payload = {
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "audience": self.API_AUDIENCE,
+            "grant_type": "client_credentials",
+        }
+
+        headers = {"content-type": "application/json"}
+
+        res = requests.post(url, json=payload, headers=headers)
+        return res.json()["access_token"]
+
+
+load_dotenv(basedir / ".env")
+
+
 @pytest.fixture()
 def test_config():
-    return TestConfig()
+    return TestFlaskConfig()
+
+
+@pytest.fixture()
+def access_token_get_medics():
+    client_id = os.environ["CLIENT_ID_GET_MEDICS"]
+    client_secret = os.environ["CLIENT_SECRET_GET_MEDICS"]
+    config_with_access_token = TestFlaskConfigAccessToken(
+        client_id=client_id, client_secret=client_secret
+    )
+    return config_with_access_token.get_access_token()
 
 
 @pytest.fixture()
