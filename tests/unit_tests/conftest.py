@@ -23,7 +23,7 @@ class TestFlaskConfigAccessToken(TestFlaskConfig):
     def get_access_token(
         self,
     ):
-        url = self.AUTH0_DOMAIN + "/oauth/token"
+        url = f"https://{self.AUTH0_DOMAIN}/oauth/token"
         payload = {
             "client_id": self.client_id,
             "client_secret": self.client_secret,

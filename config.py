@@ -12,6 +12,6 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # auth
-    AUTH0_DOMAIN = "https://medical-app.eu.auth0.com"
+    AUTH0_DOMAIN = "medical-app.eu.auth0.com"
     ALGORITHMS = ["RS256"]
     API_AUDIENCE = "patients-medics-info-api"

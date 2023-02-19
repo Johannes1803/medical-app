@@ -1,19 +1,32 @@
 from datetime import datetime
 from typing import List, Optional, Tuple
 
+from authlib.integrations.flask_oauth2 import ResourceProtector
 from flask import Response, abort, current_app, jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
 
+from config import Config
 from medical_app.backend import db
 from medical_app.backend.api_helper_functions import (
     convert_camel_case_to_underscore,
     paginate,
 )
+from medical_app.backend.authentication.authentication import (
+    Auth0JWTBearerTokenValidator,
+)
 from medical_app.backend.main import bp
 from medical_app.backend.models import Medical, Patient, Record
 
+# instantiate require auth decorator
+require_auth = ResourceProtector()
+validator = Auth0JWTBearerTokenValidator(
+    domain=Config.AUTH0_DOMAIN, audience=Config.API_AUDIENCE
+)
+require_auth.register_token_validator(validator)
+
 
 @bp.route("/medics", methods=["GET"])
+@require_auth("get:medics")
 def get_medics() -> Response:
     offset = request.args.get("offset", 0, type=int)
     limit = request.args.get("limit", 10, type=int)
