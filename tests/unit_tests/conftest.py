@@ -46,9 +46,9 @@ def test_config():
 
 
 @pytest.fixture()
-def access_token_get_medics():
-    client_id = os.environ["CLIENT_ID_GET_MEDICS"]
-    client_secret = os.environ["CLIENT_SECRET_GET_MEDICS"]
+def access_token_patient_role():
+    client_id = os.environ["CLIENT_ID_PATIENT_ROLE"]
+    client_secret = os.environ["CLIENT_SECRET_PATIENT_ROLE"]
     config_with_access_token = TestFlaskConfigAccessToken(
         client_id=client_id, client_secret=client_secret
     )

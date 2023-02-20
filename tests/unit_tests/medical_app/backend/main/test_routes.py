@@ -28,14 +28,13 @@ def assert_error_response_structure(res) -> None:
     assert res.status_code == res.json["code"]
 
 
-def test_get_medics_should_return_medics_array(app, access_token_get_medics):
+def test_get_medics_should_return_medics_array(app):
     """Test get medics returns array of medics.
 
     :param app: flask app instance
     """
     res: flask.Response = app.test_client().get(
         "/medics?limit=2&offset=1",
-        headers={"Authorization": f"Bearer {access_token_get_medics}"},
     )
 
     assert_success_response_structure(res)
@@ -304,7 +303,7 @@ def test_get_patient_non_existing_should_return_404(app):
     assert res.status_code == 404
 
 
-def test_post_patient_should_create_new_patient(app):
+def test_post_patient_should_create_new_patient(app, access_token_patient_role):
     """Test post patient returns patient.
 
     :param app: flask app instance
@@ -322,6 +321,7 @@ def test_post_patient_should_create_new_patient(app):
             "email": "anna.patient@gmail.com",
             "medicIds": [2],
         },
+        headers={"Authorization": f"Bearer {access_token_patient_role}"},
     )
 
     # test response boilerplate
@@ -343,7 +343,9 @@ def test_post_patient_should_create_new_patient(app):
     assert n_patients_before + 1 == n_patients_after
 
 
-def test_post_patient_missing_attribute_should_raise_422(app):
+def test_post_patient_missing_attribute_should_raise_422(
+    app, access_token_patient_role
+):
     """Test post medic with missing attribute raises 422 error.
 
     :param app: flask app instance
@@ -355,6 +357,7 @@ def test_post_patient_missing_attribute_should_raise_422(app):
             "lastName": "Tester",
             "patients": [],
         },
+        headers={"Authorization": f"Bearer {access_token_patient_role}"},
     )
 
     assert_error_response_structure(res)
