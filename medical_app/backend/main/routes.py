@@ -26,7 +26,6 @@ require_auth.register_token_validator(validator)
 
 
 @bp.route("/medics", methods=["GET"])
-@require_auth("get:medics")
 def get_medics() -> Response:
     offset = request.args.get("offset", 0, type=int)
     limit = request.args.get("limit", 10, type=int)
@@ -162,6 +161,7 @@ def link_patient_to_medic(medic_id: int, patient_id: int) -> Response:
 
 
 @bp.route("/patients", methods=["POST"])
+@require_auth("write:patients")
 def create_new_patient() -> Tuple[Response, int]:
     medic_ids: List[int] = request.json.get("medicIds", [])
     medics = []
