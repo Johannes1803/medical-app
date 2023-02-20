@@ -365,6 +365,27 @@ def test_post_patient_missing_attribute_should_raise_422(
     assert res.json["code"] == 422
 
 
+def test_post_patient_invalid_token_should_raise_401(app, access_token_patient_role):
+    """Test post medic with invalid token raises 401 error.
+
+    :param app: flask app instance
+    """
+    res = app.test_client().post(
+        "/patients",
+        json={
+            "firstName": "Anna",
+            "lastName": "Patient",
+            "email": "anna.patient@gmail.com",
+            "medicIds": [2],
+        },
+        headers={"Authorization": f"Bearer {access_token_patient_role}123"},
+    )
+
+    assert_error_response_structure(res)
+
+    assert res.json["code"] == 401
+
+
 def test_delete_patient_should_remove_patient_from_db(app):
     """Test delete patient removes patient from db.
 
