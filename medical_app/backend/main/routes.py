@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import List, Optional, Tuple
 
-from authlib.integrations.flask_oauth2 import ResourceProtector
 from flask import Response, abort, current_app, jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -13,12 +12,13 @@ from medical_app.backend.api_helper_functions import (
 )
 from medical_app.backend.authentication.authentication import (
     Auth0JWTBearerTokenValidator,
+    ResourceProtectorReraiseError,
 )
 from medical_app.backend.main import bp
 from medical_app.backend.models import Medical, Patient, Record
 
 # instantiate require auth decorator
-require_auth = ResourceProtector()
+require_auth = ResourceProtectorReraiseError()
 validator = Auth0JWTBearerTokenValidator(
     domain=Config.AUTH0_DOMAIN, audience=Config.API_AUDIENCE
 )

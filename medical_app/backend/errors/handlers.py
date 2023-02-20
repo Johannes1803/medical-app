@@ -1,6 +1,22 @@
+# from oauthlib.oauthlib.oauth2.rfc6749.errors import OAuth2Error
+from authlib.oauth2.base import OAuth2Error
 from flask import jsonify
 
 from medical_app.backend.errors import bp
+
+
+@bp.app_errorhandler(OAuth2Error)
+def not_allowed_app(error: OAuth2Error):
+    return (
+        jsonify(
+            {
+                "status": "error",
+                "code": error.status_code,
+                "message": error.description,
+            }
+        ),
+        error.status_code,
+    )
 
 
 @bp.app_errorhandler(404)
