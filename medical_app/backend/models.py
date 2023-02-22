@@ -59,9 +59,9 @@ class User(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-        except SQLAlchemyError:
-            # ToDo: log error
+        except SQLAlchemyError as e:
             db.session.rollback()
+            raise (e)
         else:
             instance_dict_to_be_jsonified = self.format_for_json()
             return instance_dict_to_be_jsonified
@@ -77,9 +77,10 @@ class User(db.Model):
         try:
             db.session.delete(self)
             db.session.commit()
-        except SQLAlchemyError:
+        except SQLAlchemyError as e:
             # ToDo: log error
             db.session.rollback()
+            raise e
         else:
             return id
         finally:
@@ -161,9 +162,10 @@ class Medical(User):
         try:
             self.patients.append(patient)
             db.session.commit()
-        except SQLAlchemyError:
+        except SQLAlchemyError as e:
             # ToDo: log error
             db.session.rollback()
+            raise e
         else:
             instance_dict_to_be_jsonified = self.format_for_json()
             return instance_dict_to_be_jsonified
@@ -225,9 +227,10 @@ class Record(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
-        except SQLAlchemyError:
+        except SQLAlchemyError as e:
             # ToDo: log error
             db.session.rollback()
+            raise e
         else:
             instance_dict_to_be_jsonified = self.format_for_json()
             return instance_dict_to_be_jsonified
@@ -243,9 +246,10 @@ class Record(db.Model):
         try:
             db.session.delete(self)
             db.session.commit()
-        except SQLAlchemyError:
+        except SQLAlchemyError as e:
             # ToDo: log error
             db.session.rollback()
+            raise e
         else:
             return id
         finally:

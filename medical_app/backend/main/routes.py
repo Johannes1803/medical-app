@@ -66,8 +66,12 @@ def create_new_medic() -> Tuple[Response, int]:
         except (KeyError, ValueError):
             abort(422)
         else:
-            medic_dict = medic.insert()
-            return jsonify({"status": "success", "data": medic_dict}), 201
+            try:
+                medic_dict = medic.insert()
+            except SQLAlchemyError:
+                abort(500)
+            else:
+                return jsonify({"status": "success", "data": medic_dict}), 201
 
 
 @bp.route("/medics/<int:medic_id>", methods=["GET"])
@@ -187,8 +191,12 @@ def create_new_patient() -> Tuple[Response, int]:
         except (KeyError, ValueError):
             abort(422)
         else:
-            patient_dict = medic.insert()
-            return jsonify({"status": "success", "data": patient_dict}), 201
+            try:
+                patient_dict = medic.insert()
+            except SQLAlchemyError:
+                abort(500)
+            else:
+                return jsonify({"status": "success", "data": patient_dict}), 201
 
 
 @bp.route("/patients/<int:patient_id>", methods=["GET"])
@@ -271,11 +279,14 @@ def add_record_to_patient(patient_id: int) -> Tuple[Response, int]:
                 patient_id=request.json["patientId"],
             )
         except (KeyError, ValueError):
-            # ToDo: logging in blue prints
             abort(422)
         else:
-            record_dict = record.insert()
-            return jsonify({"status": "success", "data": record_dict}), 201
+            try:
+                record_dict = record.insert()
+            except SQLAlchemyError:
+                abort(500)
+            else:
+                return jsonify({"status": "success", "data": record_dict}), 201
 
 
 @bp.route("/patients/<int:patient_id>/records/<int:record_id>", methods=["GET"])
