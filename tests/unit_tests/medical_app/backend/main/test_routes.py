@@ -189,6 +189,22 @@ def test_delete_medic_non_existing_should_return_404(
     assert res.status_code == 404
 
 
+def test_delete_medic_not_authorized_should_return_403(
+    app, access_token_patient_role
+) -> None:
+    """Test trying to delete a non existing medic raises 403.
+
+    :param app: flask app instance
+    """
+    res: flask.Response = app.test_client().delete(
+        "/medics/1",
+        headers={"Authorization": f"Bearer {access_token_patient_role}"},
+    )
+
+    assert_error_response_structure(res)
+    assert res.status_code == 403
+
+
 def test_patch_medic_should_modify_medic(app, access_token_medic_role) -> None:
     """Test patching a medic updates his information in the db.
 
@@ -468,6 +484,20 @@ def test_delete_patient_non_existing_should_return_404(
     assert res.status_code == 404
 
 
+def test_delete_not_authorized_raises_403(app, access_token_medic_role) -> None:
+    """Test trying to delete a patient without priviliges raises 403.
+
+    :param app: flask app instance
+    """
+    res: flask.Response = app.test_client().delete(
+        "/patients/1000000",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
+    )
+
+    assert_error_response_structure(res)
+    assert res.status_code == 403
+
+
 def test_get_records_of_patients_should_return_records(
     app, access_token_medic_role
 ) -> None:
@@ -608,3 +638,18 @@ def test_delete_non_existing_record_should_return_404(
     assert_error_response_structure(res)
 
     assert res.json["code"] == 404
+
+
+def test_delete_record_not_logged_in_raises_401(app) -> None:
+    """Test calling delete record without being logged in raises 401.
+
+    :param app: flask app instance
+    """
+    patient_id = 5
+    record_id = 1
+    res = app.test_client().delete(
+        f"/patients/{patient_id}/records/{record_id}",
+    )
+    assert_error_response_structure(res)
+
+    assert res.json["code"] == 401
