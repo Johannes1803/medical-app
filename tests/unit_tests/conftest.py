@@ -56,6 +56,16 @@ def access_token_patient_role():
 
 
 @pytest.fixture()
+def access_token_medic_role():
+    client_id = os.environ["CLIENT_ID_MEDIC_ROLE"]
+    client_secret = os.environ["CLIENT_SECRET_MEDIC_ROLE"]
+    config_with_access_token = TestFlaskConfigAccessToken(
+        client_id=client_id, client_secret=client_secret
+    )
+    return config_with_access_token.get_access_token()
+
+
+@pytest.fixture()
 def app(test_config: Config):
     app = create_app(test_config)
     with app.app_context() as app_context:

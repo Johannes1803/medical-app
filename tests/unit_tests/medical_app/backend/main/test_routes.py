@@ -42,7 +42,7 @@ def test_get_medics_should_return_medics_array(app):
     assert len(res.json["data"]) > 0
 
 
-def test_post_medic_should_create_new_medic(app):
+def test_post_medic_should_create_new_medic(app, access_token_medic_role):
     """Test post medic creates new medic.
 
     :param app: flask app instance
@@ -60,6 +60,7 @@ def test_post_medic_should_create_new_medic(app):
             "email": "marc.tester@gmail.com",
             "patient_ids": [3, 4],
         },
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
 
     # test response boilerplate
@@ -83,7 +84,7 @@ def test_post_medic_should_create_new_medic(app):
     assert n_medics_before + 1 == n_medics_after
 
 
-def test_post_medic_missing_attribute_should_raise_422(app):
+def test_post_medic_missing_attribute_should_raise_422(app, access_token_medic_role):
     """Test post medic with missing attribute raises 422 error.
 
     :param app: flask app instance
@@ -95,6 +96,7 @@ def test_post_medic_missing_attribute_should_raise_422(app):
             "email": "marc.tester@gmail.com",
             "patients": [],
         },
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
 
     assert_error_response_structure(res)
@@ -102,7 +104,7 @@ def test_post_medic_missing_attribute_should_raise_422(app):
     assert res.json["code"] == 422
 
 
-def test_post_medic_invalid_attribute_should_raise_422(app):
+def test_post_medic_invalid_attribute_should_raise_422(app, access_token_medic_role):
     """Test post medic with missing attribute raises 422 error.
 
     :param app: flask app instance
@@ -110,6 +112,7 @@ def test_post_medic_invalid_attribute_should_raise_422(app):
     res = app.test_client().post(
         "/medics",
         json={"email": "", "firstName": "", "id": 1, "lastName": "", "patients": []},
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
 
     assert_error_response_structure(res)
@@ -139,7 +142,7 @@ def test_get_medic_non_existing_should_return_404(app) -> None:
     assert res.status_code == 404
 
 
-def test_delete_medic_should_remove_medic_from_db(app):
+def test_delete_medic_should_remove_medic_from_db(app, access_token_medic_role):
     """Test delete medic removes medic from db.
 
     This includes removing the medic from the list of medics of each patient.
@@ -151,7 +154,10 @@ def test_delete_medic_should_remove_medic_from_db(app):
     medic = db.session.get(Medical, medic_id)
     patient_ids = [patient.id for patient in medic.patients]
 
-    res: flask.Response = app.test_client().delete(f"/medics/{medic_id}")
+    res: flask.Response = app.test_client().delete(
+        f"/medics/{medic_id}",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
+    )
 
     assert_success_response_structure(res)
 
@@ -167,18 +173,23 @@ def test_delete_medic_should_remove_medic_from_db(app):
         assert medic not in patient.medicals
 
 
-def test_delete_medic_non_existing_should_return_404(app) -> None:
+def test_delete_medic_non_existing_should_return_404(
+    app, access_token_medic_role
+) -> None:
     """Test trying to delete a non existing medic raises 404.
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().delete("/medics/1000000")
+    res: flask.Response = app.test_client().delete(
+        "/medics/1000000",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
+    )
 
     assert_error_response_structure(res)
     assert res.status_code == 404
 
 
-def test_patch_medic_should_modify_medic(app) -> None:
+def test_patch_medic_should_modify_medic(app, access_token_medic_role) -> None:
     """Test patching a medic updates his information in the db.
 
     :param app: flask app instance
@@ -193,6 +204,7 @@ def test_patch_medic_should_modify_medic(app) -> None:
             "lastName": "JustMarried",
             "patientIds": new_patient_ids,
         },
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
 
     assert_success_response_structure(res)
@@ -203,7 +215,9 @@ def test_patch_medic_should_modify_medic(app) -> None:
     assert set(res.json["data"]["patients"]) == set(new_patient_ids)
 
 
-def test_patch_medic_non_existing_attribute_raises_422(app) -> None:
+def test_patch_medic_non_existing_attribute_raises_422(
+    app, access_token_medic_role
+) -> None:
     """Test patching a medic with attribute not defined in model raises 422.
 
     :param app: flask app instance
@@ -217,18 +231,22 @@ def test_patch_medic_non_existing_attribute_raises_422(app) -> None:
             "lastName": "JustMarried",
             "hobbies": "playing guitar",
         },
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
 
     assert_error_response_structure(res)
     assert res.json["code"] == 422
 
 
-def test_get_patients_of_medic(app) -> None:
+def test_get_patients_of_medic(app, access_token_medic_role) -> None:
     """Test get patients of medic returns array of patients.
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().get("/medics/2/patients?limit=100")
+    res: flask.Response = app.test_client().get(
+        "/medics/2/patients?limit=100",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
+    )
 
     assert_success_response_structure(res)
 
@@ -236,18 +254,23 @@ def test_get_patients_of_medic(app) -> None:
     assert len(res.json["data"]) > 0
 
 
-def test_get_patients_of_medic_non_existing_should_return_404(app) -> None:
+def test_get_patients_of_medic_non_existing_should_return_404(
+    app, access_token_medic_role
+) -> None:
     """Test get medic with non-existing id raises 404 error.
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().get("/medics/1000000/patients")
+    res: flask.Response = app.test_client().get(
+        "/medics/1000000/patients",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
+    )
 
     assert_error_response_structure(res)
     assert res.status_code == 404
 
 
-def test_add_patient_to_medic(app) -> None:
+def test_add_patient_to_medic(app, access_token_medic_role) -> None:
     """Test adding patient to medic updates medic patient mapping.
 
     :param app: flask app instance
@@ -255,7 +278,8 @@ def test_add_patient_to_medic(app) -> None:
     medic_id = 1
     patient_id = 3
     res: flask.Response = app.test_client().put(
-        f"/medics/{medic_id}/patients/{patient_id}"
+        f"/medics/{medic_id}/patients/{patient_id}",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
     assert_success_response_structure(res)
 
@@ -268,7 +292,9 @@ def test_add_patient_to_medic(app) -> None:
     assert [patient for patient in medic.patients if patient.id == patient_id]
 
 
-def test_add_patient_to_medic_raises_404_if_patient_not_found(app) -> None:
+def test_add_patient_to_medic_raises_404_if_patient_not_found(
+    app, access_token_medic_role
+) -> None:
     """Test adding patient to medic raises 404 if patient not in db.
 
     :param app: flask app instance
@@ -276,28 +302,35 @@ def test_add_patient_to_medic_raises_404_if_patient_not_found(app) -> None:
     medic_id = 1
     patient_id = 1
     res: flask.Response = app.test_client().put(
-        f"/medics/{medic_id}/patients/{patient_id}"
+        f"/medics/{medic_id}/patients/{patient_id}",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
     assert_error_response_structure(res)
     assert res.json["code"] == 404
 
 
-def test_get_patient_should_return_patient(app):
+def test_get_patient_should_return_patient(app, access_token_patient_role):
     """Test get patient returns patient.
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().get("/patients/5")
+    res: flask.Response = app.test_client().get(
+        "/patients/5",
+        headers={"Authorization": f"Bearer {access_token_patient_role}"},
+    )
 
     assert_success_response_structure(res)
 
 
-def test_get_patient_non_existing_should_return_404(app):
+def test_get_patient_non_existing_should_return_404(app, access_token_patient_role):
     """Test get patient returns patient.
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().get("/patients/50")
+    res: flask.Response = app.test_client().get(
+        "/patients/50",
+        headers={"Authorization": f"Bearer {access_token_patient_role}"},
+    )
 
     assert_error_response_structure(res)
     assert res.status_code == 404
@@ -386,7 +419,7 @@ def test_post_patient_invalid_token_should_raise_401(app, access_token_patient_r
     assert res.json["code"] == 401
 
 
-def test_delete_patient_should_remove_patient_from_db(app):
+def test_delete_patient_should_remove_patient_from_db(app, access_token_patient_role):
     """Test delete patient removes patient from db.
 
     This includes removing the patient from the list of patients of each medic.
@@ -400,7 +433,10 @@ def test_delete_patient_should_remove_patient_from_db(app):
     assert patient
     medic_ids = [medic.id for medic in patient.medicals]
 
-    res: flask.Response = app.test_client().delete(f"/patients/{patient_id}")
+    res: flask.Response = app.test_client().delete(
+        f"/patients/{patient_id}",
+        headers={"Authorization": f"Bearer {access_token_patient_role}"},
+    )
 
     assert_success_response_structure(res)
 
@@ -416,41 +452,58 @@ def test_delete_patient_should_remove_patient_from_db(app):
         assert patient not in medic.patients
 
 
-def test_delete_patient_non_existing_should_return_404(app) -> None:
+def test_delete_patient_non_existing_should_return_404(
+    app, access_token_patient_role
+) -> None:
     """Test trying to delete a non existing patient raises 404.
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().delete("/patients/1000000")
+    res: flask.Response = app.test_client().delete(
+        "/patients/1000000",
+        headers={"Authorization": f"Bearer {access_token_patient_role}"},
+    )
 
     assert_error_response_structure(res)
     assert res.status_code == 404
 
 
-def test_get_records_of_patients_should_return_records(app) -> None:
+def test_get_records_of_patients_should_return_records(
+    app, access_token_medic_role
+) -> None:
     """Test getting records of a patient returns a list of records.
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().get("/patients/5/records")
+    res: flask.Response = app.test_client().get(
+        "/patients/5/records",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
+    )
 
     assert_success_response_structure(res)
 
     assert len(res.json["data"]) > 0
 
 
-def test_get_records_of_patients_non_existing_should_raise_404(app) -> None:
+def test_get_records_of_patients_non_existing_should_raise_404(
+    app, access_token_patient_role
+) -> None:
     """Test trying to get records of a non-existent patient raises 404.
 
     :param app: flask app instance
     """
-    res: flask.Response = app.test_client().get("/patients/2/records")
+    res: flask.Response = app.test_client().get(
+        "/patients/2/records",
+        headers={"Authorization": f"Bearer {access_token_patient_role}"},
+    )
 
     assert_error_response_structure(res)
     assert res.status_code == 404
 
 
-def test_post_new_record_should_add_record_to_patient(app) -> None:
+def test_post_new_record_should_add_record_to_patient(
+    app, access_token_medic_role
+) -> None:
     """Test posting a new record to patient creates record in db.
 
     :param app: flask app instance
@@ -467,6 +520,7 @@ def test_post_new_record_should_add_record_to_patient(app) -> None:
             "dateSymptomOnset": "2023-02-07",
             "patientId": patient_id,
         },
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
 
     # test response boilerplate
@@ -480,7 +534,7 @@ def test_post_new_record_should_add_record_to_patient(app) -> None:
     assert db.session.get(Record, new_record_id)
 
 
-def test_get_record_should_return_record(app) -> None:
+def test_get_record_should_return_record(app, access_token_medic_role) -> None:
     """Test getting a record returns a record.
 
     :param app: flask app instance
@@ -489,13 +543,16 @@ def test_get_record_should_return_record(app) -> None:
     record_id = 1
     res = app.test_client().get(
         f"/patients/{patient_id}/records/{record_id}",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
     assert_success_response_structure(res)
 
     assert len(res.json["data"]) > 0
 
 
-def test_get_non_existing_record_should_return_404(app) -> None:
+def test_get_non_existing_record_should_return_404(
+    app, access_token_medic_role
+) -> None:
     """Test getting a non existing record raises 404.
 
     :param app: flask app instance
@@ -504,13 +561,14 @@ def test_get_non_existing_record_should_return_404(app) -> None:
     record_id = 10
     res = app.test_client().get(
         f"/patients/{patient_id}/records/{record_id}",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
     assert_error_response_structure(res)
 
     assert res.json["code"] == 404
 
 
-def test_delete_record_removes_record_from_db(app) -> None:
+def test_delete_record_removes_record_from_db(app, access_token_medic_role) -> None:
     """Test deleting a record removes it from the db.
 
     :param app: flask app instance
@@ -522,6 +580,7 @@ def test_delete_record_removes_record_from_db(app) -> None:
     assert db.session.get(Record, record_id)
     res = app.test_client().delete(
         f"/patients/{patient_id}/records/{record_id}",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
 
     assert_success_response_structure(res)
@@ -533,7 +592,9 @@ def test_delete_record_removes_record_from_db(app) -> None:
     assert res.json["data"] == record_id
 
 
-def test_delete_non_existing_record_should_return_404(app) -> None:
+def test_delete_non_existing_record_should_return_404(
+    app, access_token_medic_role
+) -> None:
     """Test getting a non existing record raises 404.
 
     :param app: flask app instance
@@ -542,6 +603,7 @@ def test_delete_non_existing_record_should_return_404(app) -> None:
     record_id = 10
     res = app.test_client().delete(
         f"/patients/{patient_id}/records/{record_id}",
+        headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
     assert_error_response_structure(res)
 

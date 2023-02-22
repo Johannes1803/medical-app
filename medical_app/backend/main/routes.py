@@ -44,6 +44,7 @@ def get_medics() -> Response:
 
 
 @bp.route("/medics", methods=["POST"])
+@require_auth("write:medics")
 def create_new_medic() -> Tuple[Response, int]:
     patient_ids: List[int] = request.json.get("patient_ids", [])
     patients = []
@@ -84,6 +85,7 @@ def get_medic(medic_id) -> Response:
 
 
 @bp.route("/medics/<int:medic_id>", methods=["DELETE"])
+@require_auth("delete:medics")
 def delete_medic(medic_id) -> Response:
     medic: Medical = db.session.get(Medical, medic_id)
     if not medic:
@@ -100,6 +102,7 @@ def delete_medic(medic_id) -> Response:
 
 
 @bp.route("/medics/<int:medic_id>", methods=["PATCH"])
+@require_auth("write:medics")
 def update_medic(medic_id: int) -> Response:
     medic: Medical = db.session.get(Medical, medic_id)
     if not medic:
@@ -128,6 +131,7 @@ def update_medic(medic_id: int) -> Response:
 
 
 @bp.route("/medics/<int:medic_id>/patients", methods=["GET"])
+@require_auth()
 def get_patients_of_specific_medic(medic_id: int) -> Response:
     offset = request.args.get("offset", 0, type=int)
     limit = request.args.get("limit", 10, type=int)
@@ -150,6 +154,7 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
 
 
 @bp.route("/medics/<int:medic_id>/patients/<int:patient_id>", methods=["PUT"])
+@require_auth("write:medics")
 def link_patient_to_medic(medic_id: int, patient_id: int) -> Response:
     medic: Medical = db.session.get(Medical, medic_id)
     patient: Patient = db.session.get(Patient, patient_id)
@@ -187,6 +192,7 @@ def create_new_patient() -> Tuple[Response, int]:
 
 
 @bp.route("/patients/<int:patient_id>", methods=["GET"])
+@require_auth()
 def get_patient(patient_id: int) -> Response:
     patient: Patient = db.session.get(Patient, patient_id)
     if not patient:
@@ -196,6 +202,7 @@ def get_patient(patient_id: int) -> Response:
 
 
 @bp.route("/patients/<int:patient_id>", methods=["DELETE"])
+@require_auth("delete:patients")
 def delete_patient(patient_id) -> Response:
     patient: Patient = db.session.get(Patient, patient_id)
     if not patient:
@@ -211,6 +218,7 @@ def delete_patient(patient_id) -> Response:
 
 
 @bp.route("/patients/<int:patient_id>/records", methods=["GET"])
+@require_auth("get:records")
 def get_records_of_one_patient(patient_id: int) -> Response:
     offset = request.args.get("offset", 0, type=int)
     limit = request.args.get("limit", 10, type=int)
@@ -232,6 +240,7 @@ def get_records_of_one_patient(patient_id: int) -> Response:
 
 
 @bp.route("/patients/<int:patient_id>/records", methods=["POST"])
+@require_auth("write:records")
 def add_record_to_patient(patient_id: int) -> Tuple[Response, int]:
     date_format = "%Y-%m-%d"
 
@@ -270,6 +279,7 @@ def add_record_to_patient(patient_id: int) -> Tuple[Response, int]:
 
 
 @bp.route("/patients/<int:patient_id>/records/<int:record_id>", methods=["GET"])
+@require_auth("get:records")
 def get_record(patient_id: int, record_id: int):
     """Get record of specific patient.
 
@@ -294,6 +304,7 @@ def get_record(patient_id: int, record_id: int):
 
 
 @bp.route("/patients/<int:patient_id>/records/<int:record_id>", methods=["DELETE"])
+@require_auth("delete:records")
 def delete_record(patient_id: int, record_id: int) -> Response:
     """Delete record from db.
 
