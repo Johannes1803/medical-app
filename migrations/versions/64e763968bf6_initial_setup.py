@@ -1,8 +1,8 @@
-"""Setup medical, patient and record models
+"""initial setup
 
-Revision ID: 9cb49d6fc36b
+Revision ID: 64e763968bf6
 Revises: 
-Create Date: 2023-02-05 10:10:11.982310
+Create Date: 2023-02-22 20:15:56.756289
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9cb49d6fc36b'
+revision = '64e763968bf6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,7 +26,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
-    op.create_table('medical',
+    op.create_table('medic',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -38,10 +38,10 @@ def upgrade():
     )
     op.create_table('association_table',
     sa.Column('patient_id', sa.Integer(), nullable=False),
-    sa.Column('medical_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['medical_id'], ['medical.id'], ),
+    sa.Column('medic_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['medic_id'], ['medic.id'], ),
     sa.ForeignKeyConstraint(['patient_id'], ['patient.id'], ),
-    sa.PrimaryKeyConstraint('patient_id', 'medical_id')
+    sa.PrimaryKeyConstraint('patient_id', 'medic_id')
     )
     op.create_table('record',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -62,6 +62,6 @@ def downgrade():
     op.drop_table('record')
     op.drop_table('association_table')
     op.drop_table('patient')
-    op.drop_table('medical')
+    op.drop_table('medic')
     op.drop_table('user')
     # ### end Alembic commands ###
