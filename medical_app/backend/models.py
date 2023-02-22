@@ -78,7 +78,6 @@ class User(db.Model):
             db.session.delete(self)
             db.session.commit()
         except SQLAlchemyError as e:
-            # ToDo: log error
             db.session.rollback()
             raise e
         else:
@@ -163,7 +162,6 @@ class Medical(User):
             self.patients.append(patient)
             db.session.commit()
         except SQLAlchemyError as e:
-            # ToDo: log error
             db.session.rollback()
             raise e
         else:
@@ -183,7 +181,6 @@ class Medical(User):
                 setattr(self, attribute_name, v)
 
         except (SQLAlchemyError, AttributeError) as e:
-            # ToDo: log error
             db.session.rollback()
             raise (e)
         else:
@@ -228,7 +225,6 @@ class Record(db.Model):
             db.session.add(self)
             db.session.commit()
         except SQLAlchemyError as e:
-            # ToDo: log error
             db.session.rollback()
             raise e
         else:
@@ -247,7 +243,6 @@ class Record(db.Model):
             db.session.delete(self)
             db.session.commit()
         except SQLAlchemyError as e:
-            # ToDo: log error
             db.session.rollback()
             raise e
         else:
