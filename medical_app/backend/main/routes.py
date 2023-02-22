@@ -15,7 +15,7 @@ from medical_app.backend.authentication.authentication import (
     ResourceProtectorReraiseError,
 )
 from medical_app.backend.main import bp
-from medical_app.backend.models import Medical, Patient, Record
+from medical_app.backend.models import Medic, Patient, Record
 
 # instantiate require auth decorator
 require_auth = ResourceProtectorReraiseError()
@@ -30,7 +30,7 @@ def get_medics() -> Response:
     offset = request.args.get("offset", 0, type=int)
     limit = request.args.get("limit", 10, type=int)
 
-    medics: List[Medical] = Medical.query.all()
+    medics: List[Medic] = Medic.query.all()
     return jsonify(
         {
             "status": "success",
@@ -57,7 +57,7 @@ def create_new_medic() -> Tuple[Response, int]:
                 patients.append(patient)
 
         try:
-            medic = Medical(
+            medic = Medic(
                 first_name=request.json["firstName"],
                 last_name=request.json["lastName"],
                 email=request.json["email"],
@@ -76,7 +76,7 @@ def create_new_medic() -> Tuple[Response, int]:
 
 @bp.route("/medics/<int:medic_id>", methods=["GET"])
 def get_medic(medic_id) -> Response:
-    medic: Medical = db.session.get(Medical, medic_id)
+    medic: Medic = db.session.get(Medic, medic_id)
     if not medic:
         abort(404)
     else:
@@ -91,7 +91,7 @@ def get_medic(medic_id) -> Response:
 @bp.route("/medics/<int:medic_id>", methods=["DELETE"])
 @require_auth("delete:medics")
 def delete_medic(medic_id) -> Response:
-    medic: Medical = db.session.get(Medical, medic_id)
+    medic: Medic = db.session.get(Medic, medic_id)
     if not medic:
         abort(404)
     else:
@@ -108,7 +108,7 @@ def delete_medic(medic_id) -> Response:
 @bp.route("/medics/<int:medic_id>", methods=["PATCH"])
 @require_auth("write:medics")
 def update_medic(medic_id: int) -> Response:
-    medic: Medical = db.session.get(Medical, medic_id)
+    medic: Medic = db.session.get(Medic, medic_id)
     if not medic:
         abort(404)
     else:
@@ -140,7 +140,7 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
     offset = request.args.get("offset", 0, type=int)
     limit = request.args.get("limit", 10, type=int)
 
-    medic: Medical = db.session.get(Medical, medic_id)
+    medic: Medic = db.session.get(Medic, medic_id)
     if not medic:
         abort(404)
     else:
@@ -160,7 +160,7 @@ def get_patients_of_specific_medic(medic_id: int) -> Response:
 @bp.route("/medics/<int:medic_id>/patients/<int:patient_id>", methods=["PUT"])
 @require_auth("write:medics")
 def link_patient_to_medic(medic_id: int, patient_id: int) -> Response:
-    medic: Medical = db.session.get(Medical, medic_id)
+    medic: Medic = db.session.get(Medic, medic_id)
     patient: Patient = db.session.get(Patient, patient_id)
     if not (medic and patient):
         abort(404)
@@ -176,7 +176,7 @@ def create_new_patient() -> Tuple[Response, int]:
     medics = []
     with current_app.app_context():
         for medic_id in medic_ids:
-            medic = db.session.get(Medical, medic_id)
+            medic = db.session.get(Medic, medic_id)
             if not medic:
                 abort(422)
             else:
@@ -186,7 +186,7 @@ def create_new_patient() -> Tuple[Response, int]:
                 first_name=request.json["firstName"],
                 last_name=request.json["lastName"],
                 email=request.json["email"],
-                medicals=medics,
+                medics=medics,
             )
         except (KeyError, ValueError):
             abort(422)

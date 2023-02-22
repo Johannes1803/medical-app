@@ -2,7 +2,7 @@ from typing import Optional
 
 import flask
 
-from medical_app.backend.models import Medical, Patient, Record, db
+from medical_app.backend.models import Medic, Patient, Record, db
 
 
 def assert_success_response_structure(res, expected_status_code: int = 200) -> None:
@@ -48,7 +48,7 @@ def test_post_medic_should_create_new_medic(app, access_token_medic_role):
     :param app: flask app instance
     """
     # count medics before creating a new one
-    medics = Medical.query.all()
+    medics = Medic.query.all()
     n_medics_before = len(medics)
 
     # create new medic
@@ -71,7 +71,7 @@ def test_post_medic_should_create_new_medic(app, access_token_medic_role):
     assert new_medic_id
 
     # check new medic is in db
-    new_medic: Optional[Medical] = db.session.get(Medical, new_medic_id)
+    new_medic: Optional[Medic] = db.session.get(Medic, new_medic_id)
     assert new_medic
 
     # check new medic has patients
@@ -79,7 +79,7 @@ def test_post_medic_should_create_new_medic(app, access_token_medic_role):
     assert new_medic.patients[0].first_name
 
     # check medics count increased by one
-    medics = Medical.query.all()
+    medics = Medic.query.all()
     n_medics_after = len(medics)
     assert n_medics_before + 1 == n_medics_after
 
@@ -151,7 +151,7 @@ def test_delete_medic_should_remove_medic_from_db(app, access_token_medic_role):
     """
     # get patient ids associated with medic before deletion
     medic_id: int = 1
-    medic = db.session.get(Medical, medic_id)
+    medic = db.session.get(Medic, medic_id)
     patient_ids = [patient.id for patient in medic.patients]
 
     res: flask.Response = app.test_client().delete(
@@ -162,7 +162,7 @@ def test_delete_medic_should_remove_medic_from_db(app, access_token_medic_role):
     assert_success_response_structure(res)
 
     # assert medic is no longer in db
-    assert db.session.get(Medical, medic_id) is None
+    assert db.session.get(Medic, medic_id) is None
 
     # test response contains medic id
     assert res.json["data"] == medic_id
@@ -170,7 +170,7 @@ def test_delete_medic_should_remove_medic_from_db(app, access_token_medic_role):
     # test no former patient still has medic in his list of medics
     patients = Patient.query.filter(Patient.id.in_(patient_ids)).all()
     for patient in patients:
-        assert medic not in patient.medicals
+        assert medic not in patient.medics
 
 
 def test_delete_medic_non_existing_should_return_404(
@@ -301,10 +301,10 @@ def test_add_patient_to_medic(app, access_token_medic_role) -> None:
 
     # test medic is added to patient
     patient = db.session.get(Patient, patient_id)
-    assert [medic for medic in patient.medicals if medic.id == medic_id]
+    assert [medic for medic in patient.medics if medic.id == medic_id]
 
     # test patient is added to medic
-    medic = db.session.get(Medical, medic_id)
+    medic = db.session.get(Medic, medic_id)
     assert [patient for patient in medic.patients if patient.id == patient_id]
 
 
@@ -383,8 +383,8 @@ def test_post_patient_should_create_new_patient(app, access_token_patient_role):
     # check new patient is in db
     new_patient = db.session.get(Patient, new_patient_id)
 
-    # check new patient has medical added
-    assert new_patient.medicals[0].email
+    # check new patient has medic added
+    assert new_patient.medics[0].email
 
     # check medics count increased by one
     patients = Patient.query.all()
@@ -447,7 +447,7 @@ def test_delete_patient_should_remove_patient_from_db(app, access_token_patient_
     # get patient ids associated with medic before deletion
     patient = db.session.get(Patient, patient_id)
     assert patient
-    medic_ids = [medic.id for medic in patient.medicals]
+    medic_ids = [medic.id for medic in patient.medics]
 
     res: flask.Response = app.test_client().delete(
         f"/patients/{patient_id}",
@@ -463,7 +463,7 @@ def test_delete_patient_should_remove_patient_from_db(app, access_token_patient_
     assert res.json["data"] == patient_id
 
     # test no former medic still has patient in his list of patients
-    medics = Medical.query.filter(Medical.id.in_(medic_ids)).all()
+    medics = Medic.query.filter(Medic.id.in_(medic_ids)).all()
     for medic in medics:
         assert patient not in medic.patients
 

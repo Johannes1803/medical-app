@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from config import Config, basedir
 from medical_app.backend import create_app, db
-from medical_app.backend.models import Medical, Patient, Record
+from medical_app.backend.models import Medic, Patient, Record
 
 
 class TestFlaskConfig(Config):
@@ -86,12 +86,10 @@ def client(app):
 
 
 def populate_test_db():
-    med_1 = Medical(first_name="John", last_name="Doc", email="john.doc@mail.com")
+    med_1 = Medic(first_name="John", last_name="Doc", email="john.doc@mail.com")
     db.session.add(med_1)
 
-    med_2 = Medical(
-        first_name="Carla", last_name="Health", email="carla.health@mail.com"
-    )
+    med_2 = Medic(first_name="Carla", last_name="Health", email="carla.health@mail.com")
     db.session.add(med_2)
 
     patient_1 = Patient(
@@ -113,9 +111,9 @@ def populate_test_db():
     db.session.add(patient_4)
     db.session.commit()
 
-    patient_1.medicals += [med_1, med_2]
-    patient_2.medicals.append(med_1)
-    patient_3.medicals.append(med_2)
+    patient_1.medics += [med_1, med_2]
+    patient_2.medics.append(med_1)
+    patient_3.medics.append(med_2)
 
     record_1 = Record(
         title="Flew",

@@ -89,14 +89,14 @@ class User(db.Model):
 association_table = db.Table(
     "association_table",
     Column("patient_id", ForeignKey("patient.id"), primary_key=True),
-    Column("medical_id", ForeignKey("medical.id"), primary_key=True),
+    Column("medic_id", ForeignKey("medic.id"), primary_key=True),
 )
 
 
 class Patient(User):
     __tablename__ = "patient"
     id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
-    medicals: Mapped[List[Medical]] = relationship(
+    medics: Mapped[List[Medic]] = relationship(
         secondary=association_table, back_populates="patients"
     )
     records: Mapped[List[Record]] = relationship("Record", cascade="all, delete-orphan")
@@ -108,44 +108,44 @@ class Patient(User):
     def format_for_json(self, **kwargs) -> Dict[str, Any]:
         """Return dict that can easily be jsonified.
 
-        :param include_medicals_long: Whether to include detailed representation of medicals, defaults to True
+        :param include_medics_long: Whether to include detailed representation of medics, defaults to True
         :return: dict representation of class to be jsonified
         """
         format_dict = super().format_for_json(**kwargs)
         format_dict["records"] = (
             [record.format_for_json() for record in self.records],
         )
-        if kwargs.get("include_medicals_long"):
-            format_dict["medicals"] = [
+        if kwargs.get("include_medics_long"):
+            format_dict["medics"] = [
                 medic.format_for_json(include_patients_long=False)
-                for medic in self.medicals
+                for medic in self.medics
             ]
         else:
-            format_dict["medicals"] = [medic.id for medic in self.medicals]
+            format_dict["medics"] = [medic.id for medic in self.medics]
         return prune_keys_with_none_value(format_dict)
 
 
-class Medical(User):
-    __tablename__ = "medical"
+class Medic(User):
+    __tablename__ = "medic"
     id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
     patients: Mapped[List[Patient]] = relationship(
-        secondary=association_table, back_populates="medicals"
+        secondary=association_table, back_populates="medics"
     )
 
     __mapper_args__ = {
-        "polymorphic_identity": "medical",
+        "polymorphic_identity": "medic",
     }
 
     def format_for_json(self, **kwargs) -> Dict[str, Any]:
         """Return dict that can easily be jsonified.
 
-        :param include_medicals_long: Whether to include detailed representation of medicals, defaults to True
+        :param include_medics_long: Whether to include detailed representation of medics, defaults to True
         :return: dict representation of class to be jsonified
         """
         format_dict = super().format_for_json(**kwargs)
         if kwargs.get("include_patients_long"):
             format_dict["patients"] = [
-                patient.format_for_json(include_medicals_long=False)
+                patient.format_for_json(include_medics_long=False)
                 for patient in self.patients
             ]
         else:
