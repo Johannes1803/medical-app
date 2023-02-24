@@ -26,7 +26,7 @@ paths:
     post:
       summary: Create a new medic
       security:
-        - Bearer: [write:medics]
+        - Bearer: ["write:medics"]
       requestBody:
         required: true
         content:
@@ -66,7 +66,7 @@ paths:
     delete:
       summary: Delete a specific medic
       security:
-        - Bearer: [delete:medics]
+        - Bearer: ["delete:medics"]
       responses:
         "200":
           description: Id of deleted medic
@@ -81,7 +81,7 @@ paths:
     patch:
       summary: Update a specific medic
       security:
-        - Bearer: [write:medics]
+        - Bearer: ["write:medics"]
       responses:
         "200":
           description: New state of updated medic
@@ -134,7 +134,7 @@ paths:
           $ref: "#/components/schemas/PatientId"
     put:
       security:
-        - Bearer: [write:medics]
+      - Bearer: ["write:medics"]
       summary: link a patient with a medic
       responses:
         "200":
@@ -147,7 +147,7 @@ paths:
     post:
       summary: Create a new patient
       security:
-        - Bearer: [write:patients]
+        - Bearer: ["write:patients"]
       requestBody:
         required: true
         content:
@@ -208,7 +208,7 @@ paths:
     get:
       summary: Get all records of one patient
       security:
-        - Bearer: ["get:records"]
+      - Bearer: ["get:records"]  
       parameters:
         - $ref: "#/components/parameters/offsetParam"
         - $ref: "#/components/parameters/limitParam"
@@ -224,7 +224,7 @@ paths:
     post:
       summary: Add new record to patient
       security:
-        - Bearer: ["write:records"]
+      - Bearer: ["write:records"]  
       requestBody:
         required: true
         content:
@@ -257,7 +257,7 @@ paths:
     get:
       summary: Get specific record
       security:
-        - Bearer: ["get:records"]
+      - Bearer: ["get:records"]  
       responses:
         "200":
           description: Specific record of specific patient
@@ -272,7 +272,7 @@ paths:
     delete:
       summary: Delete a specific record
       security:
-        - Bearer: ["delete:records"]
+      - Bearer: ["delete:records"]  
       responses:
         "200":
           description: Id of deleted recrod
@@ -576,7 +576,19 @@ components:
           description: http error code
           type: integer
   securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    Bearer:            # arbitrary name for the security scheme
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow. [More info](https://api.example.com/docs/auth)
+      flows:
+        implicit:   # <---- OAuth flow(authorizationCode, implicit, password or clientCredentials)
+          authorizationUrl: http://127.0.0.1:5000/
+          scopes:
+            "write:medics": create/update medics
+            "delete:medics": delete medics
+            "write:patients": create/update patients
+            "delete:patients": delete patients
+            "get:records": read records
+            "write:records": create/update records
+            "delete:records": delete records
+            
+            
