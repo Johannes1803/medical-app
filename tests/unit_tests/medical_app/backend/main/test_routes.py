@@ -125,7 +125,6 @@ def test_get_medic_should_return_medic(app) -> None:
 
     :param app: flask app instance
     """
-    # ToDo: Link medic id to test setup
     res: flask.Response = app.test_client().get("/medics/1")
 
     assert_success_response_structure(res)
