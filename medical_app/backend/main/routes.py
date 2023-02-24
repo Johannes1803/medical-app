@@ -10,7 +10,7 @@ from medical_app.backend.api_helper_functions import (
     convert_camel_case_to_underscore,
     paginate,
 )
-from medical_app.backend.authentication.authentication import (
+from medical_app.backend.authentication.authentication_decorator import (
     Auth0JWTBearerTokenValidator,
     ResourceProtectorReraiseError,
 )
@@ -23,6 +23,15 @@ validator = Auth0JWTBearerTokenValidator(
     domain=Config.AUTH0_DOMAIN, audience=Config.API_AUDIENCE
 )
 require_auth.register_token_validator(validator)
+
+
+@bp.after_request
+def after_request(response):
+    response.headers.add(
+        "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
+    )
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    return response
 
 
 @bp.route("/medics", methods=["GET"])
