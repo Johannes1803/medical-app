@@ -134,7 +134,7 @@ paths:
           $ref: "#/components/schemas/PatientId"
     put:
       security:
-      - Bearer: [write:medics]
+        - Bearer: [write:medics]
       summary: link a patient with a medic
       responses:
         "200":
@@ -208,7 +208,7 @@ paths:
     get:
       summary: Get all records of one patient
       security:
-      - Bearer: ["get:records"]  
+        - Bearer: ["get:records"]
       parameters:
         - $ref: "#/components/parameters/offsetParam"
         - $ref: "#/components/parameters/limitParam"
@@ -224,7 +224,7 @@ paths:
     post:
       summary: Add new record to patient
       security:
-      - Bearer: ["write:records"]  
+        - Bearer: ["write:records"]
       requestBody:
         required: true
         content:
@@ -257,7 +257,7 @@ paths:
     get:
       summary: Get specific record
       security:
-      - Bearer: ["get:records"]  
+        - Bearer: ["get:records"]
       responses:
         "200":
           description: Specific record of specific patient
@@ -272,7 +272,7 @@ paths:
     delete:
       summary: Delete a specific record
       security:
-      - Bearer: ["delete:records"]  
+        - Bearer: ["delete:records"]
       responses:
         "200":
           description: Id of deleted recrod
