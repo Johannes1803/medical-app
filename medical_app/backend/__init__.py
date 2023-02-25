@@ -37,7 +37,7 @@ def create_app(config_class=Config):
         client_id=app.config["AUTH0_CLIENT_ID"],
         client_secret=app.config["AUTH0_CLIENT_SECRET"],
         client_kwargs={
-            "scope": "openid get:records write:medics write:records delete:medics delete:records",
+            "scope": "openid delete:medics delete:patients delete:records get:patients get:records write:medics write:patients write:records"
         },
         server_metadata_url=f'https://{app.config["AUTH0_DOMAIN"]}/.well-known/openid-configuration',
     )
