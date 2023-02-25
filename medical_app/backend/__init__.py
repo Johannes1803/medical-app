@@ -2,7 +2,7 @@ from authlib.integrations.flask_client import OAuth
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-
+import sqlalchemy as sa
 from config import Config
 
 db = SQLAlchemy()
@@ -42,4 +42,15 @@ def create_app(config_class=Config):
     app.register_blueprint(
         auth_bp,
     )
+
+    # Check if the database needs to be initialized
+    engine = sa.create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
+    inspector = sa.inspect(engine)
+    if not inspector.has_table("medic"):
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+            app.logger.info("Initialized the database!")
+    else:
+        app.logger.info("Database already contains the required tables.")
     return app
