@@ -194,7 +194,6 @@ class Record(db.Model):
     id = Column(Integer, primary_key=True)
     title = Column(String(64), nullable=False)
     description = Column(String, nullable=False)
-    # symptoms = Column(ARRAY(String))
     date_diagnosis = Column(DateTime, nullable=False)
     date_symptom_onset = Column(DateTime, nullable=False)
     date_symptom_offset = Column(DateTime, nullable=True)
