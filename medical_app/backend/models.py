@@ -178,6 +178,7 @@ class Medic(User):
             for attribute_name, v in kwargs.items():
                 getattr(self, attribute_name)
                 setattr(self, attribute_name, v)
+                db.session.commit()
 
         except (SQLAlchemyError, AttributeError) as e:
             db.session.rollback()
