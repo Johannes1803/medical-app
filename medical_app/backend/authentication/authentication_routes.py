@@ -44,5 +44,5 @@ def home():
     return render_template(
         "home.html",
         session=session.get("user"),
-        pretty=json.dumps(session.get("user").get("access_token"), indent=4),
+        pretty=json.dumps(session.get("user", {}).get("access_token"), indent=4),
     )
