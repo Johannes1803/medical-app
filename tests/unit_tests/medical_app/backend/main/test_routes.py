@@ -367,6 +367,7 @@ def test_post_patient_should_create_new_patient(app, access_token_patient_role):
             "firstName": "Anna",
             "lastName": "Patient",
             "email": "anna.patient@gmail.com",
+            "records": [],
             "medicIds": [2],
         },
         headers={"Authorization": f"Bearer {access_token_patient_role}"},
