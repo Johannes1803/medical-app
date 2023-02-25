@@ -182,7 +182,7 @@ def create_new_patient() -> Tuple[Response, int]:
             else:
                 medics.append(medic)
         try:
-            medic = Patient(
+            patient = Patient(
                 first_name=request.json["firstName"],
                 last_name=request.json["lastName"],
                 email=request.json["email"],
@@ -192,7 +192,7 @@ def create_new_patient() -> Tuple[Response, int]:
             abort(422)
         else:
             try:
-                patient_dict = medic.insert()
+                patient_dict = patient.insert()
             except SQLAlchemyError:
                 abort(500)
             else:

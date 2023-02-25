@@ -112,9 +112,8 @@ class Patient(User):
         :return: dict representation of class to be jsonified
         """
         format_dict = super().format_for_json(**kwargs)
-        format_dict["records"] = (
-            [record.format_for_json() for record in self.records],
-        )
+        format_dict["records"] = [record.format_for_json() for record in self.records]
+
         if kwargs.get("include_medics_long"):
             format_dict["medics"] = [
                 medic.format_for_json(include_patients_long=False)
