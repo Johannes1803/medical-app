@@ -12,6 +12,8 @@ pyyaml = "*"
 openapi3 = "*"
 python-jose = "*"
 Authlib = "*"
+psycopg2-binary = "*"
+gunicorn = "*"
 
 [dev-packages]
 types-Flask = "*"
