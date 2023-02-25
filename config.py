@@ -9,7 +9,10 @@ load_dotenv(basedir / ".env")
 
 class Config(object):
     # db
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + str(basedir / "medical_app.db")
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql://{os.environ['DB_USER']}:{os.environ['DB_PWD']}"
+        f"@{os.environ['DB_HOST']}:{os.environ['DB_PORT']}/{os.environ['DB_NAME']}"
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # auth
