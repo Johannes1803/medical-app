@@ -25,15 +25,6 @@ validator = Auth0JWTBearerTokenValidator(
 require_auth.register_token_validator(validator)
 
 
-@bp.after_request
-def after_request(response):
-    response.headers.add(
-        "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
-    )
-    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
-    return response
-
-
 @bp.route("/medics", methods=["GET"])
 def get_medics() -> Response:
     offset = request.args.get("offset", 0, type=int)
