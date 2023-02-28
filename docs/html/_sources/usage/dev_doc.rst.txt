@@ -14,9 +14,8 @@ Repository layout
 ::
 
     project
-    ├── documentation  -- The sphinx documentation
-        ├── source
-        |── build
+    ├── docs  -- The rendered html documentation
+    ├── docs_src  -- The docs source
     ├── medical_app    -- the main application
         |── backend
             |── authentication -- authentication flask blueprint
