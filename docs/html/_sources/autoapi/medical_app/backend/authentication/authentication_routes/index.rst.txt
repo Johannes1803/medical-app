@@ -1,0 +1,34 @@
+:py:mod:`medical_app.backend.authentication.authentication_routes`
+==================================================================
+
+.. py:module:: medical_app.backend.authentication.authentication_routes
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.authentication.authentication_routes.login
+   medical_app.backend.authentication.authentication_routes.callback
+   medical_app.backend.authentication.authentication_routes.logout
+   medical_app.backend.authentication.authentication_routes.home
+
+
+
+.. py:function:: login()
+
+
+.. py:function:: callback()
+
+
+.. py:function:: logout()
+
+
+.. py:function:: home()
+
+

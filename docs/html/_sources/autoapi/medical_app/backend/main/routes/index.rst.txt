@@ -1,0 +1,102 @@
+:py:mod:`medical_app.backend.main.routes`
+=========================================
+
+.. py:module:: medical_app.backend.main.routes
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.main.routes.get_medics
+   medical_app.backend.main.routes.create_new_medic
+   medical_app.backend.main.routes.get_medic
+   medical_app.backend.main.routes.delete_medic
+   medical_app.backend.main.routes.update_medic
+   medical_app.backend.main.routes.get_patients_of_specific_medic
+   medical_app.backend.main.routes.link_patient_to_medic
+   medical_app.backend.main.routes.create_new_patient
+   medical_app.backend.main.routes.get_patient
+   medical_app.backend.main.routes.delete_patient
+   medical_app.backend.main.routes.get_records_of_one_patient
+   medical_app.backend.main.routes.add_record_to_patient
+   medical_app.backend.main.routes.get_record
+   medical_app.backend.main.routes.delete_record
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.main.routes.require_auth
+   medical_app.backend.main.routes.validator
+
+
+.. py:data:: require_auth
+
+   
+
+.. py:data:: validator
+
+   
+
+.. py:function:: get_medics() -> flask.Response
+
+
+.. py:function:: create_new_medic() -> Tuple[flask.Response, int]
+
+
+.. py:function:: get_medic(medic_id) -> flask.Response
+
+
+.. py:function:: delete_medic(medic_id) -> flask.Response
+
+
+.. py:function:: update_medic(medic_id: int) -> flask.Response
+
+
+.. py:function:: get_patients_of_specific_medic(medic_id: int) -> flask.Response
+
+
+.. py:function:: link_patient_to_medic(medic_id: int, patient_id: int) -> flask.Response
+
+
+.. py:function:: create_new_patient() -> Tuple[flask.Response, int]
+
+
+.. py:function:: get_patient(patient_id: int) -> flask.Response
+
+
+.. py:function:: delete_patient(patient_id) -> flask.Response
+
+
+.. py:function:: get_records_of_one_patient(patient_id: int) -> flask.Response
+
+
+.. py:function:: add_record_to_patient(patient_id: int) -> Tuple[flask.Response, int]
+
+
+.. py:function:: get_record(patient_id: int, record_id: int)
+
+   Get record of specific patient.
+
+   :param patient_id: id of patient
+   :param record_id: id of record
+
+
+.. py:function:: delete_record(patient_id: int, record_id: int) -> flask.Response
+
+   Delete record from db.
+
+   :param patient_id: id of patient
+   :param record_id: id of record
+   :return: flask response
+
+

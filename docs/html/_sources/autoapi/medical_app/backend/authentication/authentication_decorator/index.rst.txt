@@ -1,0 +1,74 @@
+:py:mod:`medical_app.backend.authentication.authentication_decorator`
+=====================================================================
+
+.. py:module:: medical_app.backend.authentication.authentication_decorator
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.authentication.authentication_decorator.Auth0JWTBearerTokenValidator
+   medical_app.backend.authentication.authentication_decorator.ResourceProtectorReraiseError
+
+
+
+
+.. py:class:: Auth0JWTBearerTokenValidator(domain, audience)
+
+   Bases: :py:obj:`authlib.oauth2.rfc7523.JWTBearerTokenValidator`
+
+   Base token validator class. Subclass this validator to register
+   into ResourceProtector instance.
+
+
+.. py:class:: ResourceProtectorReraiseError
+
+   Bases: :py:obj:`authlib.integrations.flask_oauth2.ResourceProtector`
+
+   A protecting method for resource servers. Creating a ``require_oauth``
+   decorator easily with ResourceProtector::
+
+       from authlib.integrations.flask_oauth2 import ResourceProtector
+
+       require_oauth = ResourceProtector()
+
+       # add bearer token validator
+       from authlib.oauth2.rfc6750 import BearerTokenValidator
+       from project.models import Token
+
+       class MyBearerTokenValidator(BearerTokenValidator):
+           def authenticate_token(self, token_string):
+               return Token.query.filter_by(access_token=token_string).first()
+
+           def request_invalid(self, request):
+               return False
+
+           def token_revoked(self, token):
+               return False
+
+       require_oauth.register_token_validator(MyBearerTokenValidator())
+
+       # protect resource with require_oauth
+
+       @app.route('/user')
+       @require_oauth(['profile'])
+       def user_profile():
+           user = User.query.get(current_token.user_id)
+           return jsonify(user.to_dict())
+
+
+   .. py:method:: raise_error_response(error)
+
+      Raise HTTPException for OAuth2Error. Developers can re-implement
+      this method to customize the error response.
+
+      :param error: OAuth2Error
+      :raise: HTTPException
+
+
+

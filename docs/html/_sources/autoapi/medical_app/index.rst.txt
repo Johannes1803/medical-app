@@ -1,0 +1,15 @@
+:py:mod:`medical_app`
+=====================
+
+.. py:module:: medical_app
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   backend/index.rst
+
+

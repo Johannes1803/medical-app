@@ -36,7 +36,7 @@ extensions = [
 ]
 
 autoapi_type = "python"
-autoapi_dirs = ["../../medical_app"]
+autoapi_dirs = ["../medical_app"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

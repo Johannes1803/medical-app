@@ -1,0 +1,236 @@
+:py:mod:`medical_app.backend.models`
+====================================
+
+.. py:module:: medical_app.backend.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.models.User
+   medical_app.backend.models.Patient
+   medical_app.backend.models.Medic
+   medical_app.backend.models.Record
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.models.prune_keys_with_none_value
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.models.association_table
+
+
+.. py:function:: prune_keys_with_none_value(input_dict: dict) -> dict
+
+   Remove keys if value is None
+
+   :param input_dict: dict with potential none values
+   :return: pruned dict
+
+
+.. py:class:: User(**kwargs)
+
+   Bases: :py:obj:`medical_app.backend.db.Model`
+
+   .. py:attribute:: empty_string_forbidden_cols
+      :type: Set
+
+      
+
+   .. py:attribute:: id
+
+      
+
+   .. py:attribute:: first_name
+
+      
+
+   .. py:attribute:: last_name
+
+      
+
+   .. py:attribute:: email
+
+      
+
+   .. py:method:: format_for_json(**kwargs) -> Dict[str, Any]
+
+      Return dict representation of user.
+
+      :return: dict representation of class
+
+
+   .. py:method:: insert() -> Dict[str, Any]
+
+      Insert user into db.
+
+      :return: dict representation of user.
+
+
+   .. py:method:: delete() -> int
+
+      Delete self from db.
+
+      :return: id of deleted user
+
+
+
+.. py:data:: association_table
+
+   
+
+.. py:class:: Patient(**kwargs)
+
+   Bases: :py:obj:`User`
+
+   .. py:attribute:: __tablename__
+      :value: 'patient'
+
+      
+
+   .. py:attribute:: id
+      :type: sqlalchemy.orm.Mapped[int]
+
+      
+
+   .. py:attribute:: medics
+      :type: sqlalchemy.orm.Mapped[List[Medic]]
+
+      
+
+   .. py:attribute:: records
+      :type: sqlalchemy.orm.Mapped[List[Record]]
+
+      
+
+   .. py:attribute:: __mapper_args__
+
+      
+
+   .. py:method:: format_for_json(**kwargs) -> Dict[str, Any]
+
+      Return dict that can easily be jsonified.
+
+      :param include_medics_long: Whether to include detailed representation of medics, defaults to True
+      :return: dict representation of class to be jsonified
+
+
+
+.. py:class:: Medic(**kwargs)
+
+   Bases: :py:obj:`User`
+
+   .. py:attribute:: __tablename__
+      :value: 'medic'
+
+      
+
+   .. py:attribute:: id
+      :type: sqlalchemy.orm.Mapped[int]
+
+      
+
+   .. py:attribute:: patients
+      :type: sqlalchemy.orm.Mapped[List[Patient]]
+
+      
+
+   .. py:attribute:: __mapper_args__
+
+      
+
+   .. py:method:: format_for_json(**kwargs) -> Dict[str, Any]
+
+      Return dict that can easily be jsonified.
+
+      :param include_medics_long: Whether to include detailed representation of medics, defaults to True
+      :return: dict representation of class to be jsonified
+
+
+   .. py:method:: add_patient(patient: Patient) -> Dict[str, Any]
+
+      Add patient to medic.
+
+      :param patient_id: id of patient to add
+      :return: dict represenation of self to be jsonified
+
+
+   .. py:method:: update(**kwargs) -> Dict[str, Any]
+
+      Update medic with given kwargs.
+
+      :return: dict representation of updated medic.
+
+
+
+.. py:class:: Record
+
+   Bases: :py:obj:`medical_app.backend.db.Model`
+
+   .. py:attribute:: id
+
+      
+
+   .. py:attribute:: title
+
+      
+
+   .. py:attribute:: description
+
+      
+
+   .. py:attribute:: date_diagnosis
+
+      
+
+   .. py:attribute:: date_symptom_onset
+
+      
+
+   .. py:attribute:: date_symptom_offset
+
+      
+
+   .. py:attribute:: patient_id
+      :type: sqlalchemy.orm.Mapped[int]
+
+      
+
+   .. py:method:: format_for_json() -> Dict[str, Any]
+
+      Return dict that can easily be jsonified.
+
+      :return: dict representation of record to be jsonified
+
+
+   .. py:method:: insert() -> Dict[str, Any]
+
+      Insert record into db.
+
+      :return: dict representation of record.
+
+
+   .. py:method:: delete() -> int
+
+      Delete self from db.
+
+      :return: id of deleted user
+
+
+

@@ -1,0 +1,60 @@
+:py:mod:`medical_app.backend`
+=============================
+
+.. py:module:: medical_app.backend
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   authentication/index.rst
+   errors/index.rst
+   main/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   api_helper_functions/index.rst
+   models/index.rst
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.create_app
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.db
+   medical_app.backend.migrate
+
+
+.. py:data:: db
+
+   
+
+.. py:data:: migrate
+
+   
+
+.. py:function:: create_app(config_class=Config)
+
+

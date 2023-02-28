@@ -1,0 +1,38 @@
+:py:mod:`medical_app.backend.errors.handlers`
+=============================================
+
+.. py:module:: medical_app.backend.errors.handlers
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.errors.handlers.not_allowed_app
+   medical_app.backend.errors.handlers.resource_not_found
+   medical_app.backend.errors.handlers.route_invalid
+   medical_app.backend.errors.handlers.unprocessable_entity
+   medical_app.backend.errors.handlers.internal_server_error
+
+
+
+.. py:function:: not_allowed_app(error: authlib.oauth2.base.OAuth2Error)
+
+
+.. py:function:: resource_not_found(error)
+
+
+.. py:function:: route_invalid(error)
+
+
+.. py:function:: unprocessable_entity(error)
+
+
+.. py:function:: internal_server_error(error)
+
+

@@ -1,0 +1,22 @@
+:py:mod:`medical_app.backend.main`
+==================================
+
+.. py:module:: medical_app.backend.main
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   routes/index.rst
+
+
+Package Contents
+----------------
+
+.. py:data:: bp
+
+   
+

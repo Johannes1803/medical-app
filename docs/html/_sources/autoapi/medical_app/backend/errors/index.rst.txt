@@ -1,0 +1,22 @@
+:py:mod:`medical_app.backend.errors`
+====================================
+
+.. py:module:: medical_app.backend.errors
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   handlers/index.rst
+
+
+Package Contents
+----------------
+
+.. py:data:: bp
+
+   
+

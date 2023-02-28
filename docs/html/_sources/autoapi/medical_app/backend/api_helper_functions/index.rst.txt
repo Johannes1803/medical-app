@@ -1,0 +1,39 @@
+:py:mod:`medical_app.backend.api_helper_functions`
+==================================================
+
+.. py:module:: medical_app.backend.api_helper_functions
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   medical_app.backend.api_helper_functions.paginate
+   medical_app.backend.api_helper_functions.convert_camel_case_to_underscore
+
+
+
+.. py:function:: paginate(collection_: Sequence, offset: int = 0, limit: int = 10) -> Sequence
+
+   Return paginated range of collection.
+
+   :param collection_: indexable sequence of objects
+   :param offset: return elements starting from offset index position
+   :param limit: maximum number of elements to return,
+           actual returned number can be lower if there are less elements in collection after offset.
+   :return: collection from offset to offest + limit
+
+
+.. py:function:: convert_camel_case_to_underscore(camel_case_name: str) -> str
+
+   Convert camel case var name to underscore python convention var name.
+
+   :param camel_case_name: var in camel case
+   :return same var name in under score
+
+

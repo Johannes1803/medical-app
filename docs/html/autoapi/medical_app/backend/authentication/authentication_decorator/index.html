@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>medical_app.backend.authentication.authentication_decorator &mdash; medical-app-rest-api  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            medical-app-rest-api
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../usage/client_doc.html">Medical Rest API documentation for clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../usage/dev_doc.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">medical-app-rest-api</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">medical_app.backend.authentication.authentication_decorator</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/autoapi/medical_app/backend/authentication/authentication_decorator/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-medical_app.backend.authentication.authentication_decorator">
+<span id="medical-app-backend-authentication-authentication-decorator"></span><h1><a class="reference internal" href="#module-medical_app.backend.authentication.authentication_decorator" title="medical_app.backend.authentication.authentication_decorator"><code class="xref py py-mod docutils literal notranslate"><span class="pre">medical_app.backend.authentication.authentication_decorator</span></code></a><a class="headerlink" href="#module-medical_app.backend.authentication.authentication_decorator" title="Permalink to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#medical_app.backend.authentication.authentication_decorator.Auth0JWTBearerTokenValidator" title="medical_app.backend.authentication.authentication_decorator.Auth0JWTBearerTokenValidator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Auth0JWTBearerTokenValidator</span></code></a></p></td>
+<td><p>Base token validator class. Subclass this validator to register</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#medical_app.backend.authentication.authentication_decorator.ResourceProtectorReraiseError" title="medical_app.backend.authentication.authentication_decorator.ResourceProtectorReraiseError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResourceProtectorReraiseError</span></code></a></p></td>
+<td><p>A protecting method for resource servers. Creating a <code class="docutils literal notranslate"><span class="pre">require_oauth</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="medical_app.backend.authentication.authentication_decorator.Auth0JWTBearerTokenValidator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">medical_app.backend.authentication.authentication_decorator.</span></span><span class="sig-name descname"><span class="pre">Auth0JWTBearerTokenValidator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audience</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#medical_app.backend.authentication.authentication_decorator.Auth0JWTBearerTokenValidator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">authlib.oauth2.rfc7523.JWTBearerTokenValidator</span></code></p>
+<p>Base token validator class. Subclass this validator to register
+into ResourceProtector instance.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="medical_app.backend.authentication.authentication_decorator.ResourceProtectorReraiseError">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">medical_app.backend.authentication.authentication_decorator.</span></span><span class="sig-name descname"><span class="pre">ResourceProtectorReraiseError</span></span><a class="headerlink" href="#medical_app.backend.authentication.authentication_decorator.ResourceProtectorReraiseError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">authlib.integrations.flask_oauth2.ResourceProtector</span></code></p>
+<p>A protecting method for resource servers. Creating a <code class="docutils literal notranslate"><span class="pre">require_oauth</span></code>
+decorator easily with ResourceProtector:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">authlib.integrations.flask_oauth2</span> <span class="kn">import</span> <span class="n">ResourceProtector</span>
+
+<span class="n">require_oauth</span> <span class="o">=</span> <span class="n">ResourceProtector</span><span class="p">()</span>
+
+<span class="c1"># add bearer token validator</span>
+<span class="kn">from</span> <span class="nn">authlib.oauth2.rfc6750</span> <span class="kn">import</span> <span class="n">BearerTokenValidator</span>
+<span class="kn">from</span> <span class="nn">project.models</span> <span class="kn">import</span> <span class="n">Token</span>
+
+<span class="k">class</span> <span class="nc">MyBearerTokenValidator</span><span class="p">(</span><span class="n">BearerTokenValidator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">authenticate_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_string</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">access_token</span><span class="o">=</span><span class="n">token_string</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">request_invalid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">token_revoked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="n">require_oauth</span><span class="o">.</span><span class="n">register_token_validator</span><span class="p">(</span><span class="n">MyBearerTokenValidator</span><span class="p">())</span>
+
+<span class="c1"># protect resource with require_oauth</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/user&#39;</span><span class="p">)</span>
+<span class="nd">@require_oauth</span><span class="p">([</span><span class="s1">&#39;profile&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">user_profile</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">current_token</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="medical_app.backend.authentication.authentication_decorator.ResourceProtectorReraiseError.raise_error_response">
+<span class="sig-name descname"><span class="pre">raise_error_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#medical_app.backend.authentication.authentication_decorator.ResourceProtectorReraiseError.raise_error_response" title="Permalink to this definition"></a></dt>
+<dd><p>Raise HTTPException for OAuth2Error. Developers can re-implement
+this method to customize the error response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>error</strong> – OAuth2Error</p>
+</dd>
+<dt class="field-even">Raise<span class="colon">:</span></dt>
+<dd class="field-even"><p>HTTPException</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Johannes Birk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

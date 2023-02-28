@@ -1,0 +1,23 @@
+:py:mod:`medical_app.backend.authentication`
+============================================
+
+.. py:module:: medical_app.backend.authentication
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   authentication_decorator/index.rst
+   authentication_routes/index.rst
+
+
+Package Contents
+----------------
+
+.. py:data:: bp
+
+   
+
