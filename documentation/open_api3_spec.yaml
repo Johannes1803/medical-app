@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   version: "0.1.0"
   title: "medical_app"
-  description: Manage patient records for easier access to treatment history
+  description: Manage patient records for easier access to treatment history.
 
 servers:
   - url: https://medical-rest-api.onrender.com/
