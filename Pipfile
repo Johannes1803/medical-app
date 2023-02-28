@@ -20,6 +20,11 @@ flask-cors = "*"
 types-Flask = "*"
 schemathesis = "*"
 pytest = "*"
+sphinx = "*"
+sphinx-rtd-theme = "1"
+sphinx-autoapi = "*"
+myst-parser = "*"
+sphinxcontrib-openapi = "*"
 
 [requires]
 python_version = "3.9"
