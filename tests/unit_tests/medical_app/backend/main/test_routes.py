@@ -210,7 +210,7 @@ def test_patch_medic_should_modify_medic(app, access_token_medic_role) -> None:
     :param app: flask app instance
     """
     medic_id = 2
-    new_patient_ids = [4, 5, 6]
+    new_patient_ids = [3]
 
     res: flask.Response = app.test_client().patch(
         f"/medics/{medic_id}",

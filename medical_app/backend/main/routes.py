@@ -115,7 +115,7 @@ def update_medic(medic_id: int) -> Response:
         patch_kwargs = {
             convert_camel_case_to_underscore(k): v for k, v in request.json.items()
         }
-        patient_ids: List[int] = patch_kwargs.pop("patientIds", [])
+        patient_ids: List[int] = patch_kwargs.pop("patient_ids", [])
         patients = []
         for patient_id in patient_ids:
             patient = db.session.get(Patient, patient_id)
