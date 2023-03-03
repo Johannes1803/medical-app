@@ -215,8 +215,6 @@ def test_patch_medic_should_modify_medic(app, access_token_medic_role) -> None:
     res: flask.Response = app.test_client().patch(
         f"/medics/{medic_id}",
         json={
-            "email": "newMail@mail.com",
-            "lastName": "JustMarried",
             "patientIds": new_patient_ids,
         },
         headers={"Authorization": f"Bearer {access_token_medic_role}"},
@@ -547,7 +545,6 @@ def test_post_new_record_should_add_record_to_patient(
             # "symptoms": ["string"],
             "dateDiagnosis": "2023-02-14",
             "dateSymptomOnset": "2023-02-07",
-            "patientId": patient_id,
         },
         headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )

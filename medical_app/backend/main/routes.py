@@ -276,7 +276,7 @@ def add_record_to_patient(patient_id: int) -> Tuple[Response, int]:
                 date_diagnosis=date_diagnosis,
                 date_symptom_onset=date_symptom_onset,
                 date_symptom_offset=date_symptom_offset,
-                patient_id=request.json["patientId"],
+                patient_id=patient_id,
             )
         except (KeyError, ValueError):
             abort(422)
