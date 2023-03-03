@@ -46,7 +46,7 @@ def get_medics() -> Response:
 @bp.route("/medics", methods=["POST"])
 @require_auth("write:medics")
 def create_new_medic() -> Tuple[Response, int]:
-    patient_ids: List[int] = request.json.get("patient_ids", [])
+    patient_ids: List[int] = request.json.get("patientIds", [])
     patients = []
     with current_app.app_context():
         for patient_id in patient_ids:
@@ -115,7 +115,7 @@ def update_medic(medic_id: int) -> Response:
         patch_kwargs = {
             convert_camel_case_to_underscore(k): v for k, v in request.json.items()
         }
-        patient_ids: List[int] = patch_kwargs.pop("patient_ids", [])
+        patient_ids: List[int] = patch_kwargs.pop("patientIds", [])
         patients = []
         for patient_id in patient_ids:
             patient = db.session.get(Patient, patient_id)

@@ -55,10 +55,10 @@ def test_post_medic_should_create_new_medic(app, access_token_medic_role):
     res = app.test_client().post(
         "/medics",
         json={
-            "firstName": "Marc",
-            "lastName": "Tester",
-            "email": "marc.tester@gmail.com",
-            "patient_ids": [3, 4],
+            "firstName": "Franz",
+            "lastName": "Hungertobel",
+            "email": "franz.hungertobel@mail.com",
+            "patientIds": [3, 4],
         },
         headers={"Authorization": f"Bearer {access_token_medic_role}"},
     )
@@ -367,7 +367,6 @@ def test_post_patient_should_create_new_patient(app, access_token_patient_role):
             "firstName": "Anna",
             "lastName": "Patient",
             "email": "anna.patient@gmail.com",
-            "records": [],
             "medicIds": [2],
         },
         headers={"Authorization": f"Bearer {access_token_patient_role}"},
