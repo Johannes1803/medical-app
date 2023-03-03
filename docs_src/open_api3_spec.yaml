@@ -82,6 +82,12 @@ paths:
       summary: Update a specific medic
       security:
         - Bearer: ["write:medics"]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Medic"
       responses:
         "200":
           description: New state of updated medic
@@ -382,7 +388,9 @@ components:
         email:
           type: string
         records:
-          $ref: "#/components/schemas/RecordArray"
+          allOf:
+            - $ref: "#/components/schemas/RecordArray"
+            - readOnly: true
         medics:
           allOf:
             - $ref: "#/components/schemas/MedicArray"
