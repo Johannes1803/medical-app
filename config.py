@@ -57,7 +57,9 @@ load_dotenv(basedir / ".env")
 
 
 class ProdConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI", "").replace(
+        "postgres://", "postgresql://"
+    )
     APP_SECRET_KEY = os.environ.get("APP_SECRET_KEY")
     AUTH0_CLIENT_ID = os.environ.get("AUTH0_CLIENT_ID")
     AUTH0_CLIENT_SECRET = os.environ.get("AUTH0_CLIENT_SECRET")
