@@ -11,7 +11,7 @@ from medical_app.backend.authentication import bp
 def login():
     return current_app.oauth.auth0.authorize_redirect(
         redirect_uri=url_for("auth.callback", _external=True),
-        audience=current_app.config["AUTH0_AUDIENCE"],
+        audience=current_app.config["API_AUDIENCE"],
     )
 
 

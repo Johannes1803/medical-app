@@ -4,13 +4,13 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from config import Config
+from config import ProdConfig
 
 db = SQLAlchemy()
 migrate = Migrate()
 
 
-def create_app(config_class=Config):
+def create_app(config_class=ProdConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
